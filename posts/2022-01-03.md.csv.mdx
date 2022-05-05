@@ -1,0 +1,18 @@
+---
+title: find_or_create_byメソッドはブロックを取れる
+date: "2022-01-03"
+---
+
+こんにちは、たわらです。
+
+`find_or_create_by`ってブロックを取れるんですね。
+
+```ruby
+User.find_or_create_by!(email: "hoge@example.com") do |user|
+  user.name = "hoge"
+end
+```
+
+emailで検索してレコードが存在すれば、そのオブジェクトを返却する。もし存在しなければ、引数のemailとブロック内のnameを使ってレコードを新規作成する。
+
+[find_or_create_by | Railsドキュメント](https://railsdoc.com/page/find_or_create_by)

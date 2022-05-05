@@ -1,0 +1,135 @@
+---
+title: has_many :through関連付けとsouceオプションで欲しいレコードの集合を取得する
+date: "2020-06-12T15:26:50+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/06/12/152650
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613584070747
+---
+
+こんにちは、たわらです。
+
+本記事は、has_many :through関連付けとsouceオプションの情報の整理です。
+
+## ことの発端
+
+掲示板作成アプリにて、他のユーザーが作成した掲示板にBookmark機能を実装するにあたり、
+
+```ruby
+has_many :bookmark_boards, through: :bookmarks, source: :board
+```
+という記述が理解できませんでした。
+
+Bookmarksテーブルは作成したけど、`bookmark_boards`なんてテーブルは作ってないぞ。
+
+has_manyの引数はクラス名じゃないといけないのではないか？
+
+と思っていたので、？？？　となりました。
+
+## 多対多の関係を関連付ける has_many :through関連付け
+
+has_many :through関連付けは、Railsガイドによると、次のように説明されています。
+
+>has_many :through関連付けは、他方のモデルと「多対多」のつながりを設定する場合によく使われます。この関連付けは、2つのモデルの間に「第3のモデル」(joinモデル)が介在する点が特徴です。それによって、相手モデルの「0個以上」のインスタンスとマッチします。
+
+ユーザーは複数の掲示板にブクマができるし、掲示板は複数のユーザーにブクマされることができます。なので、ユーザーと掲示板は多対多の関係にあります。
+
+ただここで、そのものずばり、Bookmark_boardsテーブルを作り、user_id、board_id、title、bodyと持たせることも考えられます。
+
+ですが、これだと既存のBoardテーブルにある情報と重複してしまいます。Boardテーブルにある、任意のbodyの内容が更新されたとき、Bookmark_boardsテーブルも同じ箇所を更新する必要が発生してしまいます。「1 fact 1 place」の原則からはずれ、データの冗長性により、更新時異常なるものが発生する危険があります。
+
+このあたりは、Railsチュートリアルのユーザーフォローのところの解説に通じます。
+
+
+[https://railstutorial.jp/chapters/following-users?version=3.2#sec-a_problem_with_the_data_model:embed:cite]
+
+## ブクマするというイベント系エンティティ
+
+なので、Bookmarksテーブルをつくり、user_idとboard_idのカラムを持たせ、あるユーザーがひとつの掲示板をブクマしていることを表現します。
+
+Railsはこのテーブルを経由して、Boardテーブルにアクセスし、あるユーザーがブックマークした掲示板のレコードの集合を取得できるのです。
+
+このように、ユーザーとか商品という「モノ」ではなく、ブックマークとか販売などの「行為・出来事」の記録を「イベント系エンティティ」と分類し、管理対象とするのです。
+
+とエラソーに言っていますが、「楽々ERDレッスン」（pp25）に解説されていることを、講師に教えてもらいました。
+
+この発想は新鮮でした。モノだけでなくて、イベントも管理するのか、管理できるのか、管理しなくちゃならないのか！　と思いました。
+
+
+[https://amzn.to/3dW9Wp4:embed:cite]
+
+
+で、ユーザーがひとつの掲示板を何度もブクマできることは必要ないので、use_idとboard_idのペアが一意になるようにします。
+
+``` ruby
+#bookmark.rb
+
+validates :user_id, uniqueness: { scope: :board_id }
+```
+```ruby
+#migrationに追記
+
+add_index :bookmarks, [:user_id, :board_id], unique: true
+```
+
+## sourceオプションでBookmarksテーブルを経由して参照するテーブルを決定する
+
+そもそもなぜ、
+
+```ruby
+
+has_many :boards, through: :bookmarks
+```
+ではいけないのか？　Bookmarksテーブルを経由して、Boardテーブルから必要なデータが取得できるじゃないか、と。
+
+問題は簡単で、すでにhas_many :boardsを使用してしまっているからです。has_manyに同じ引数は渡せないのです。（:boards の部分て引数だったんだ！！）
+
+では、どうして、
+
+```ruby
+has_many :bookmark_boards, through: :bookmarks
+
+```
+ではいけないのでしょうか？　
+
+この場合、Railsは、Bookmarksテーブルを経由して、has_manyの引数であるBookmark_boardsというテーブルを探します。で、当然そのようなテーブルはないので、エラーが起きてしまいます。
+
+つまり、Bookmarksテーブルを経由したあと、Railsがどこのテーブルのデータを取得すればよいかわからない、ということです。
+
+そこで、sourceオプションが登場します。Bookmarksテーブルを経由したら、こっちのテーブルにデータを取りに行ってね、ということです。
+
+この場合、Boardテーブルからブクマした掲示板のデータ集合を取得したいので、
+
+```ruby
+has_many :bookmark_boards, through: :bookmarks, source: :board
+```
+
+このようになるのですね！
+
+## どうしてbookmark_boardsという名前なの？
+
+has_manyの引数は任意に決めることができます。ではどうして、このような名前なのでしょうか。
+
+答えは簡単で、どのような配列が返ってくるかが、人間にわかりやすくするためです。
+
+user.bookmark_boardsなどとコードのなかに見つければ、
+
+ああ、これはユーザーのブクマした掲示板を取得しているんだな、ということがわかります。
+
+
+## 最後に
+これを飲み込むまでにすごい時間がかかった。。。
+
+読んでくださったかた、ありがとうございます。
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,86 @@
+---
+title: urlに任意の文字が含まれているかどうかを確認する
+date: "2021-04-12T23:05:46+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/04/12/230546
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613715414348
+---
+
+ヘッダーにあるボタンの遷移先をURLによって変えたいことがあります。
+
+こんな感じで書けます。Railsのお話です。
+
+URLに/hogeか /hoge/があれば処理を変えたいのです。
+
+```ruby
+- if request.path.match(/\/hoge(\/)?/)
+  = render "shared/hoge"
+- else
+  = render "shared/home"
+```
+
+正規表現を使って処理を分岐させているわけです。
+
+/スラッシュで囲んで書くと正規表現オブジェクトになります。
+
+
+```ruby
+match(/\/hoge(\/)?/)
+```
+ここの部分でURLに/hogeが含まれているかを判定しています。
+
+・\ は直後の正規表現記号をエスケープする。これないと //hogeってなって、最初のふたつ目の/までを正規表現オブジェクトとしてしまう。
+
+・(\/)はおなじく/を正規表現オブジェクトの終わりとしないため
+
+・？は /hoge/を（たぶん）ひとまとまりとした文字が0個か1個のときにヒットする、、、あれ、、、０個じゃだめじゃね。いいのかな。よくないな
+
+```ruby
+- if request.path.match(/\/hoge(\/)+?/)
+  = render "shared/hoge"
+- else
+  = render "shared/home"
+```
+
+こっちが正解かな。
+
+いや+は必要ない。
+
+>？は /hoge/を（たぶん）ひとまとまりとした文字が0個か1個のときにヒットする
+
+この認識が間違ってますね。
+
+```
+(\/)?
+```
+これはあくまで / の一文字が0個か1個の場合にマッチする。
+
+つまり、、、
+
+```
+request.path.match(/\/hoge(\/)?/)
+```
+これは
+/hoge または /hoge/ が含まれてればマッチするということですね。
+
+結局のところ、下記でOKですね。
+
+```ruby
+- if request.path.match(/\/hoge(\/)?/)
+  = render "shared/hoge"
+- else
+  = render "shared/home"
+```
+
+参考文献
+
+[https://murashun.jp/article/programming/regular-expression.html:embed:cite]
+
+
+[https://userweb.mnet.ne.jp/nakama/:embed:cite]
+
+
+[https://rubular.com/:embed:cite]
+
+
+
+

@@ -1,0 +1,35 @@
+---
+title: 「ゼロからわかる ruby 超入門」3章以降の読書メモ
+date: "2021-04-20T10:43:55+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/04/20/104355
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613718493659
+Draft: true
+---
+
+・caseは変数の値に応じて、複数の道から一つ選んで分岐する処理
+
+・二択のときは if から三択以上のときは case から考えるとよい
+
+・ブロックは下記でも動く
+
+```ruby
+3.times {
+  puts "hogehoge"
+}
+```
+
+・メソッドの実行結果として返ってくる値のことを戻り値という
+
+・Array、String、Hashクラス、Enumerableモジュールのページから読むのがおすすめ
+
+・uniq { |n| n.to_s } のように書くことを、ブロックを渡す、と表現する。
+
+・join.("と”)で引数で文字列をつなげられる
+
+・split.("と”)で引数で文字列を区切る
+
+・eachメソッドは各要素についてブロックで処理を行うことが目的となり、mapメソッドは各要素を変換した新しい配列を得ることが目的になることが多い
+
+・ハッシュは、複数のデータを扱えることは配列と同じですが、ハッシュ「キー」と「値」のセットで複数のデータを扱うことができます
+
+

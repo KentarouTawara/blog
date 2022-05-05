@@ -1,0 +1,111 @@
+---
+title: ' .data()メソッドで指定したdata-*グローバル属性の属性値が取得できる'
+date: "2020-06-16T23:55:38+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/06/16/235538
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613585999313
+---
+
+こんにちは、たわらです。
+
+本記事では、jQueryの`.data()`メソッドについて整理しました。
+
+
+
+## jQueryの`.data()メソッド`
+
+たとえば、こんなふうに使います。これは何をしているのかというと、、、
+
+```javascript
+const commentId = $(this).data("comment-id")
+```
+
+`this`で指定した要素を`$()`で囲むことで、HTML文書内から`this`を探し出して、その要素をjQueryオブジェクトに変えています。
+
+
+
+そして、jQueryオブジェクトのなかから、`"comment-id"`という属性の属性値を取得しているのです。
+
+
+
+正確には、あるHTML要素のdata-*グローバル属性の属性値を取得しています。
+
+
+
+## data-*グローバル属性の登場
+
+あと出しになってしまいますが、`this`はこのようなHTML要素でした。
+
+```ruby
+<button class="btn btn-success js-button-comment-update" data-comment-id="<%= comment.id %>">更新</button>
+```
+
+更新ボタンを表示するというbuttonタグでした。で、このbuttonタグに持たせている属性のひとつが、data-*グローバル属性です。
+
+`data-comment-id="<%= comment.id %>"`
+
+ここですね。
+
+グローバル属性というのは、どんなタグにも属性として持たせることができるから、そう呼ばれるようです。
+
+
+
+何をするのかというと、、、
+
+> **data-\*** [グローバル属性](https://developer.mozilla.org/ja/docs/Web/HTML/Global_attributes) は**カスタムデータ属性**と呼ばれる属性の組を作り、[HTML](https://developer.mozilla.org/ja/docs/Web/HTML) と、スクリプトによる [DOM](https://developer.mozilla.org/ja/docs/DOM) 表現との間で、固有の情報を交換できるようにします。
+
+とのこと。DOM表現というのが、jQueryオブジェクトとなったタグなどのHTML要素を右に左にすることだと思います。
+
+
+
+なので、整理すると、
+
+`const commentId = $(this).data("comment-id")`の
+
+
+
+`.data("comment-id")`の部分は、指定された要素（この場合は`this`）の`data-comment-id`を探しに行きます。
+
+
+
+そして、`data-comment-id="<%= comment.id %>"`を見つけ、
+
+
+
+属性値である`"<%= comment.id %>"`を取得します。
+
+
+
+data-hogehogeを探しに行く、というところがミソですね。
+
+
+
+## 最後に
+
+整理すると簡単ですが、基本的なHTMLタグの属性に関する知識がなかったので、理解まで時間がかかりました。
+
+
+
+読んでくださったかた、ありがとうございます。
+
+
+
+## 参考文献
+
+
+[https://developer.mozilla.org/ja/docs/Web/HTML/Global_attributes/data-*:embed:cite]
+
+
+
+[http://www.jquerystudy.info/reference/data/jData.html:embed:cite]
+
+
+
+
+
+
+
+
+
+
+
+

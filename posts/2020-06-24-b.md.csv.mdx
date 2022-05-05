@@ -1,0 +1,83 @@
+---
+title: namespace を使ってコントローラーをグループ化する
+date: "2020-06-24T23:05:20+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/06/24/230520
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613589465151
+---
+
+こんにちは、たわらです。
+
+本記事は、namespaceを使ったときのディレクトリ構成の情報をまとめたものです。
+
+
+
+## 名前空間をつくるメリット
+
+名前空間を使うメリットはざっくりふたつあるみたいです。wikipediaによれば、
+
+> **名前空間**（なまえくうかん）は**Namespace**の訳語で、名前の集合を分割することで衝突の可能性を低減しつつ参照を容易にする概念である。
+
+[https://ja.wikipedia.org/wiki/%E5%90%8D%E5%89%8D%E7%A9%BA%E9%96%93](https://ja.wikipedia.org/wiki/名前空間)
+
+とあります。
+
+１　集合を分けることで同じ名前を使うことができる
+
+たとえば管理者用のログイン機能を実装するときに、user_sessions_controllerという名前を使おうとします。ただし、既にサービスのログイン機能の実装の際に、その名前のコントローラー名を使用していると、アプリの挙動がおかしくなってしまう可能性があります。
+
+２　参照が簡単になる
+
+ディレクトリを見たときに、名前空間でファイルを分けておくと、人間も管理しやすいし、アプリケーションもファイルの参照が用意になります。たぶん。
+
+
+
+## 名前空間をつくる
+
+routes.rbにこのように記載します。
+
+```ruby
+namespace :admin do
+  resources :articles
+end
+```
+
+そして、ディレクトリを下記のようにつくってあげます。名前空間名のところにはこの場合、`admin`が入ります。
+
+```html
+─ app
+　├ controllers
+　│└ 【名前空間名】
+　│　└ 【コントローラ名】_controller.rb
+　└ views
+　　└ 【名前空間名】
+　　　└ 【コントローラ名】
+　　　　└ 【アクション名】.html.erb
+```
+
+コントローラーはこんな感じで記載します。
+
+```
+class 【名前空間名】::【コントローラ名】Controller < ApplicationController
+  def 【アクション名】
+　　hoge
+  end
+end
+```
+
+管理者じゃないとログインできない、などのメソッドをつくり、before_actionメソッドなどを作るとよいですね。
+
+
+
+## 最後に
+
+ディレクトリの構造を俯瞰で眺めるって大事ですね。
+
+読んでくださったかた、ありがとうございました。
+
+
+
+## 参考文献
+nemespaceの箇所
+
+[https://railsguides.jp/routing.html#%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%A9%E3%81%AE%E5%90%8D%E5%89%8D%E7%A9%BA%E9%96%93%E3%81%A8%E3%83%AB%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0:embed:cite]
+

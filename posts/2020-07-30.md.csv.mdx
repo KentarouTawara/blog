@@ -1,0 +1,122 @@
+---
+title: ポリモーフィック関連を使うと、複数のモデルに属していることを1つの関連付けで表現できる
+date: "2020-07-30T21:16:06+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/07/30/211606
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613607199086
+---
+
+
+
+こんにちは、たわらです。
+
+
+
+ポリモーフィック関連について整理した記事です。
+
+
+
+## モデルのコードはこんな感じ
+
+ブログ記事を作成するサービスを考えます。記事をブロックを追加するかたちで作成します。記事は、Ariticleブロックを複数持っているということです。そして、記事ブロックには3種類あります。文章と画像です。
+
+SentenceモデルとMediumモデルがあり、それらにAriticleblockモデルがポリモーフィック関連しているとします。
+
+それぞれこんなふうになります。
+
+Ariticleblockモデル
+
+```ruby
+class ArticleBlock < ApplicationRecord
+  belongs_to :article
+  belongs_to :blockable, polymorphic: true, dependent: :destroy
+  # ...
+end
+```
+
+Sentenceモデル
+
+```ruby
+class Sentence < ApplicationRecord
+  has_one :article_block, as: :blockable, dependent: :destroy
+  # ...
+end
+```
+
+Mediumモデル
+
+```ruby
+class Medium < ApplicationRecord
+  has_one :article_block, as: :blockable, dependent: :destroy
+  # ...
+end
+```
+
+
+
+Articleblockモデルに`polymorphic: true`とあります。これでポリモーフィック関連ができます。blockableという存在しないテーブル名に属している、と読めます。
+
+
+
+SentenceモデルとMediumモデルには`as: :blockable`とあります。Articleblockモデルにblockableとして関連する、と読めます。
+
+## カラムの作成はこんな感じ
+
+Ariticleブロックのカラムにはポリモーフィック関連のための準備が必要です。
+
+```ruby
+class CreateArticleBlocks < ActiveRecord::Migration[5.2]
+  def change
+    create_table :article_blocks do |t|
+      t.belongs_to :article
+      t.belongs_to :blockable, polymorphic: true
+      t.timestamps
+
+      t.index :level
+    end
+  end
+end
+```
+
+〇〇ableを作成する必要があるようです。
+
+こうすると自動的にAriticleblockテーブルに、blockable_idとblockable_typeが追加されます。
+
+
+
+この状態で、Sentence.newをすると自動的に、blockable_idに適当な数値が入り、blockable_typeに"Sentence"と入ります。
+
+
+
+## コンソールでの出力はこんな感じ
+
+```ruby
+[1] pry(main)> ArticleBlock.first
+  ArticleBlock Load (1.7ms)  SELECT  `article_blocks`.* FROM `article_blocks` ORDER BY `article_blocks`.`id` ASC LIMIT 1
+=> #<ArticleBlock:0x00007ffa2e9d37f0
+ id: 1,
+ article_id: 1,
+ blockable_type: "Sentence",
+ blockable_id: 1,
+ created_at: Wed, 15 Jul 2020 16:43:32 JST +09:00,
+ updated_at: Wed, 15 Jul 2020 16:43:32 JST +09:00>
+[2] pry(main)> ArticleBlock.first.blockable
+  ArticleBlock Load (0.6ms)  SELECT  `article_blocks`.* FROM `article_blocks` ORDER BY `article_blocks`.`id` ASC LIMIT 1
+  Sentence Load (1.2ms)  SELECT  `sentences`.* FROM `sentences` WHERE `sentences`.`id` = 1 LIMIT 1
+=> #<Sentence:0x00007ffa2eaa9fd0 id: 1, body: "<p>およよよよ</p>", created_at: Wed, 15 Jul 2020 16:43:32 JST +09:00, updated_at: Wed, 15 Jul 2020 16:43:46 JST +09:00>
+```
+
+
+
+## 参考文献リスト
+
+[https://railsguides.jp/association_basics.html#%E3%83%9D%E3%83%AA%E3%83%A2%E3%83%BC%E3%83%95%E3%82%A3%E3%83%83%E3%82%AF%E9%96%A2%E9%80%A3%E4%BB%98%E3%81%91:embed:cite]
+
+
+
+[https://qiita.com/itkrt2y/items/32ad1512fce1bf90c20b:title]
+
+
+[https://qiita.com/kasei-san/items/a9795de8a6558fbcff14:title]
+
+
+

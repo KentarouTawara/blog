@@ -1,0 +1,162 @@
+---
+title: jQueryをざっくり勉強する
+date: "2020-08-14T17:38:09+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/08/14/173809
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613614314449
+---
+
+
+こんにちは、たわらです。
+
+本記事はJQueryをざっくり理解するために必要な知識をまとめた記事です。
+
+
+
+## 「要素を指定する」→「それに何かをする」
+
+JQueryの基本的な考え方は、「何かを取ってくる」→「それに何かする」です。下記の参考書がわかりやすかったです。
+
+
+[asin:B00TDDLNUQ:detail]
+
+
+
+
+
+この考え方を理解できればコードを見ても何がしたいのかがわかります。
+
+```
+$('#sample1').hide();
+```
+
+このコードは、「id属性がsample1である要素を隠す」ということです。
+
+```
+<div id = "sample1">なんらかのテキスト</div>
+```
+
+この要素があれば、これを非表示（hide）にします。
+
+```javascript
+$("#js-bookmark-button-for-board-<%= @board.id %>").replaceWith("<%= j(render('boards/unbookmark', board: @board)) %>");
+```
+
+例えばこんなコードがあったとします。
+
+HTMLから`#js-bookmark-button-for-board-<%= @board.id %>`というidを持つ要素を取ってきて、`boardsディレクトリ内のunbookmarkをレンダリングした要素に置き換える`ということをしていることがわかります。
+
+わりと単純ですね。
+
+## $()で要素を囲うことでjQueryオブジェクト化する
+
+何かを取ってくるときに、操作したい要素を`$()`で囲います。
+
+このことで、HTMLの要素をjQueryオブジェクト化することができます。で、jQueryオブジェクトに対して任意のメソッドを呼び出してあげることができます。
+
+（特定のクラスのインスタンスには、そのクラスが保持しているメソッドを呼び出せることに似ていますね！）
+
+## 要素の指定の仕方 （「要素を指定する」）
+
+要素の指定の仕方はたくさんあるみたいですが、とりあえずこれを覚えよう。要素を指定する文字?のことをセレクタと呼びます。要素をセレクトするための文字ということですね。
+
+・id　`$('#hogehoge')`　例　`<div id = "hogehoge">なんらかのテキスト</div>`
+
+・class　`$('.foo')`　例　`<div class = 'foo' >なんらかのテキスト</div>`
+
+・タグ　`$('p')`　例　`<p>なんらかのテキスト</p>`
+
+
+
+これらを組み合わせて操作したい要素を取ってくることができます。指定したセレクタの条件を満たす要素をすべて取ってくることができます。
+
+
+
+・タグ ＋ id　`$('div#hogehoge')`　例　`<div id = "hogehoge">なんらかのテキスト</div>`
+
+・クラス ＋ id　`$('#hogehoge.foo')`　例　`<p> id = "hogehoge" class=foo>なんらかのテキスト</p>`
+
+・タグ ＋ クラス ＋ id　`$('div#hogehoge.foo')`　例　`<div id = "hogehoge" class= foo>なんらかのテキスト</div>`
+
+
+
+他にも要素の階層構造を判断して、取得したい要素を特定するためのセレクタとして子孫セレクタ（ancestor descendant）なるものもあります。`$('p strong')`みたいにします。「pのなかのstrong要素を指定」できるというわけです。
+
+## いろんなメソッド（「それに何かをする」）
+
+要素を指定したらいろんなメソッドが使えます。
+
+```
+$('セレクタ').メソッド(引数);
+```
+
+・show()
+
+・hide()
+
+・replace()
+
+・val()
+
+・prepend()、append()
+
+などなど詳しくはこちらを参照
+
+[http://semooh.jp/jquery/:embed:cite]
+
+
+
+
+## $(function(){...})
+
+ページ上にある要素を操作したいときには、すべての要素がページに読み込まれている必要があります。そうしないと、まだ読み込まれていない要素に対して操作しようとしてうまくいきません。
+
+`$(function(){...})`と書くと、「ページ読み込み完了時に実行されるコードを予約する」ことができます。
+
+```
+$(function(){
+ //なにかしらの処理
+});
+```
+
+こんな風に書きます。
+
+
+
+## $(this)とは？
+
+イベントが発生した要素が格納されます。クリックした要素のidを取得したいときなどに、data属性と一緒に使うことがあります。
+
+
+
+## data()でdata属性の値を取得できる
+
+`data()`メソッドを使うと、取得した要素のなかのデータ属性にアクセスすることができます。例えば、複数のコメントにidが連番されているときに、そのコメントの一意の番号を取得することができます。
+
+```
+const commentId = $(this).data("comment-id")
+```
+
+## 実装するときの注意点
+
+・どの要素をどのように動かしたいのかを整理してから実装しましょう。
+
+・変数を作成したときは`console.log`でどのような値を格納しているか、こまめに確認すること
+
+
+
+## 参考文献
+
+
+[https://developer.mozilla.org/ja/docs/Web/HTML/Global_attributes/data-*:embed:cite]
+
+
+
+[http://semooh.jp/jquery/:embed:cite]
+
+[asin:B00TDDLNUQ:detail]
+
+
+
+[https://qiita.com/hiro266/items/160a4f9290ecd9f27d15:embed:cite]
+
+

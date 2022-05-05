@@ -1,0 +1,72 @@
+---
+title: 「金の切れ目が縁の切れ目」を、splitメソッドで作ってみた！
+date: "2021-01-05T22:08:40+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/01/05/220840
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613674630837
+---
+
+こんにちは、rubyの復習をします。
+
+今日はsplitメソッドです。文字列を配列にすることができるみたいです。
+この教材をだらだら見てるときに思いつきました。
+
+【Rubyで入門(下巻)】"ちゃんと" Ruby を学ぼう！ ー オブジェクト指向機能で完結！編 | Udemy
+
+
+[https://www.udemy.com/course/ruby-ruby/:embed:cite]
+
+
+
+### 金の切れ目が縁の切れ目
+
+hoge.rbファイルを作って、、、
+
+```ruby
+
+# 金でつながる集団を作ります
+kizuna_money = "僕金あなた金彼ら"
+
+# 金に切れ目を入れます
+kizuna_no_money = kizuna_money.split("金")
+
+p kizuna_no_money
+
+```
+と書きます。これを実行すると、、、
+
+[![Image from Gyazo](https://i.gyazo.com/f094a6186f5913802ac323481f7ef3b1.gif)](https://gyazo.com/f094a6186f5913802ac323481f7ef3b1)
+
+となります。
+僕、あなた、彼らは金があった場所で区切られてしまいました。
+まさに金の切れ目が縁の切れ目になってますね！
+
+しかも面白いのは、金が「なくなっている」ことですね笑
+
+splitの引数に渡した文字列は配列には含まれないようです。
+
+### 愛の団結
+
+配列を文字列にすることもできます。joinメソッドです。
+
+```ruby
+
+kizuna_money = "僕金あなた金彼ら"
+kizuna_no_money = kizuna_money.split("金")
+p kizuna_no_money
+
+# 愛で団結する
+kizuna_ai = kizuna_no_money.join("愛")
+p kizuna_ai
+
+```
+
+こんなふうに書いて、実行すると、、、
+
+[![Image from Gyazo](https://i.gyazo.com/d26eaf65cf1045c55283e9e7df5abf0a.gif)](https://gyazo.com/d26eaf65cf1045c55283e9e7df5abf0a)
+
+"僕愛あなた愛彼ら"と団結することができました。他にも愛の代わりに、信頼、信仰、地縁、血縁、利益などが代替できますね。外部から挿入できるものなのか、ということはさておいといて。
+
+思いついたくだらないことを、実現できるって楽しいですね！
+
+
+

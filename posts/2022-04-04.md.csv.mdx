@@ -1,0 +1,88 @@
+---
+title: blog-starter-typescriptにremark-highlight.jsを当てる方法
+date: "2022-04-04"
+---
+
+こんにちは、たわらです。
+
+本ブログはVercel社が用意しているブログスターターの[blog-starter-typescript](https://github.com/vercel/next.js/tree/canary/examples/blog-starter-typescript)をベースにしています。今回はこのブログにシンタックスハイライトを追加した方法のメモです。
+
+結論、下記の記事を参考にすればできます。
+
+[rehype-highlightでmarkdownにシンタックスハイライトを適用する | tamalog](https://tamalog.szmd.jp/rehype-highlight/)
+
+さて今回は、rehype-highlightを使用します。
+
+[rehypejs/rehype-highlight: plugin to highlight code blocks](https://github.com/rehypejs/rehype-highlight)
+
+
+
+まずは必要なライブラリの読み込み。
+
+```
+yarn add unified remark-parse remark-rehype rehype-highlight rehype-stringify
+```
+
+remark-highlight.jsを使用するには、markdownをhtmlに変換する処理の方法を変更する必要があります。
+
+`lib/markdownToHtml.ts /`のresult変数の定義を変更します。
+
+こちらのコードを、、、
+
+```js
+import { remark } from 'remark'
+import html from 'remark-html'
+
+export default async function markdownToHtml(markdown: string) {
+  const result = await remark().use(html).process(markdown)
+  return result.toString()
+}
+```
+
+↓
+
+```js
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeStringify from 'rehype-stringify';
+
+export default async function markdownToHtml(markdown: string) {
+const result = await unified()
+    .use(remarkParse)
+    .use(remarkRehype)
+    .use(rehypeHighlight)
+    .use(rehypeStringify)
+    .process(markdown);
+  return result.toString();
+}
+```
+
+このように処理を変えると、mdファイルのコードブロックで記述した箇所に特別なhtml要素とclassを付与することができます。
+
+あとは、highlight.jsのcssを当てればコードに色が付きます。そのために、_app.tsxにcssを読み込ませます。
+(今回はhybrid.cssを使用しています。)
+
+```js
+import { AppProps } from 'next/app'
+import '../styles/index.css'
+import "../styles/global.css"
+import 'highlight.js/styles/hybrid.css'; //追記
+
+export default function MyApp({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />
+}
+```
+
+これで完了です！シンタックスハイライトがついているはずです！
+
+また、当てられるcssのテーマはたくさんあるので、お好きなのをこちらで選んでください。
+
+[https://github.com/highlightjs/highlight.js/tree/main/src/styles](https://github.com/highlightjs/highlight.js/tree/main/src/styles)
+
+こちらのdemoで見比べができます。
+
+[https://highlightjs.org/static/demo/](https://highlightjs.org/static/demo/)
+
+(了)

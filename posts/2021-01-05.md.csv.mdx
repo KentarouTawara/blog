@@ -1,0 +1,192 @@
+---
+title: 'bundle update airbrake をしたら「error: implicit declaration of function ''rb_thread_call_without_gvl''
+  is invalid」が出た'
+date: "2021-01-05T23:12:17+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/01/05/231217
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613674659111
+---
+
+こんにちは。
+
+関わっている案件で「Airbrakeをアップデートしといて」と頼まれた。実行したらいろいろエラーになったけど解決したのでメモ。
+
+## 特定のgem だけupdateする
+
+`bundle update gemの名前`でできる。この場合、依存関係にあるgemもアップデートされる。
+
+それを避けたい場合は`bundle update --conservative gemの名前`とする。
+
+参考記事
+
+bundle updateで特定のgemのみ更新する時に気をつけるべきポイント - 10nin blog
+
+[https://scrapbox.io/10nin/bundle_update%E3%81%A7%E7%89%B9%E5%AE%9A%E3%81%AEgem%E3%81%AE%E3%81%BF%E6%9B%B4%E6%96%B0%E3%81%99%E3%82%8B%E6%99%82%E3%81%AB%E6%B0%97%E3%82%92%E3%81%A4%E3%81%91%E3%82%8B%E3%81%B9%E3%81%8D%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88:embed:cite]
+
+「bundle update --sourceで特定のgemをアップデート」は、何がダメで、「--conservative」とは何なのか - Qiita
+
+[https://qiita.com/itume/items/a1137da9eef7165dde38:embed:cite]
+
+今回は、「依存関係ごとたのむ」とのことなので、前者を実施。
+
+
+```ruby
+
+bundle update airbrake
+
+```
+
+## エラー発生　一発目
+
+
+```ruby
+
+略
+
+Fetching ffi 1.9.18
+Installing ffi 1.9.18 with native extensions
+Gem::Ext::BuildError: ERROR: Failed to build gem native extension.
+
+略
+
+current directory:
+/Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/gems/ffi-1.9.18/ext/ffi_c
+make "DESTDIR=" clean
+current directory:
+/Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/gems/ffi-1.9.18/ext/ffi_c
+make "DESTDIR="
+compiling AbstractMemory.c
+compiling ArrayType.c
+compiling Buffer.c
+compiling Call.c
+Call.c:355:5: error: implicit declaration of function 'rb_thread_call_without_gvl' is invalid in C99
+[-Werror,-Wimplicit-function-declaration]
+    rbffi_thread_blocking_region(call_blocking_function, data, (void *) -1, NULL);
+    ^
+./Thread.h:78:39: note: expanded from macro 'rbffi_thread_blocking_region'
+# define rbffi_thread_blocking_region rb_thread_call_without_gvl
+                                      ^
+1 error generated.
+make: *** [Call.o] Error 1
+make failed, exit code 2
+Gem files will remain installed in
+/Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/gems/ffi-1.9.18 for
+inspection.
+Results logged to
+/Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/extensions/x86_64-darwin-19/2.6.0/ffi-1.9.18/gem_make.out
+An error occurred while installing ffi (1.9.18), and Bundler cannot continue.
+Make sure that `gem install ffi -v '1.9.18' --source 'https://rubygems.org/'` succeeds before
+bundling.
+
+```
+
+指示通りに
+
+```
+
+gem install ffi -v '1.9.18' --source 'https://rubygems.org/'
+
+```
+
+しかし、、、
+
+
+## エラー発生　二発目
+
+```ruby
+
+❯ gem install ffi -v '1.9.18' --source 'https://rubygems.org/'                                     ✘ 5
+Building native extensions. This could take a while...
+ERROR:  Error installing ffi:
+        ERROR: Failed to build gem native extension.
+    current directory: /Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/gems/ffi-1.9.18/ext/ffi_c
+/Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/bin/ruby -I /Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/2.6.0 -r ./siteconf20210105-72618-ac0m5z.rb extconf.rb
+checking for ffi_call() in -lffi... yes
+checking for ffi_prep_closure()... yes
+checking for ffi_raw_call()... yes
+checking for ffi_prep_raw_closure()... yes
+checking for shlwapi.h... no
+checking for rb_thread_blocking_region()... no
+checking for rb_thread_call_with_gvl()... yes
+checking for rb_thread_call_without_gvl()... yes
+checking for ffi_prep_cif_var()... yes
+creating extconf.h
+creating Makefile
+current directory: /Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/gems/ffi-1.9.18/ext/ffi_c
+make "DESTDIR=" clean
+current directory: /Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/gems/ffi-1.9.18/ext/ffi_c
+make "DESTDIR="
+compiling AbstractMemory.c
+compiling ArrayType.c
+compiling Buffer.c
+compiling Call.c
+Call.c:355:5: error: implicit declaration of function 'rb_thread_call_without_gvl' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+    rbffi_thread_blocking_region(call_blocking_function, data, (void *) -1, NULL);
+    ^
+./Thread.h:78:39: note: expanded from macro 'rbffi_thread_blocking_region'
+# define rbffi_thread_blocking_region rb_thread_call_without_gvl
+                                      ^
+1 error generated.
+make: *** [Call.o] Error 1
+make failed, exit code 2
+Gem files will remain installed in /Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/gems/ffi-1.9.18 for inspection.
+Results logged to /Users/tawarakentarou/.anyenv/envs/rbenv/versions/2.6.2/lib/ruby/gems/2.6.0/extensions/x86_64-darwin-19/2.6.0/ffi-1.9.18/gem_make.out
+
+```
+
+なんでできひんのかい！　と思う気持ちを抑えて、
+
+` error: implicit declaration of function 'rb_thread_call_without_gvl'`
+
+をググると、、、
+
+## オプション付けるといけるよ
+
+同じような現象に困っている人を発見。で、回答を見ると、なかなかグッドポイントが高いし、比較的最近の回答だから信ぴょう性が高そう。
+
+[https://stackoverflow.com/questions/64098041/cant-install-ffi-v-1-9-18-on-macos-catalina:embed:cite]
+
+
+ということで
+
+```
+
+gem install ffi -v '1.9.18' -- --with-cflags="-Wno-error=implicit-function-declaration"
+
+```
+
+上記コマンドを打つと、gem ffi をインストールできた！
+
+その後、
+
+```
+
+bundle update airbrake
+
+```
+を実行。うまくいく！　タスク完了！
+
+## -- --with-cflags="-Wno-error=implicit-function-declaration" ???
+
+
+このオプションは何なんだ？　ということでコピペしてぐぐると、、、
+
+【puma】puma4台インストールできない問題の対処法 - Qiita
+
+[https://qiita.com/aiandrox/items/9389696ebc3cc6d3422e:embed:cite]
+
+
+この記事の最下部にざっくり説明があった。
+
+`--with-cflags=` はＣ言語で書かれたファイルをコンパイルするときに、次のオプションで実行してね、という意味らしい。
+
+で、そのオプションが、、、
+
+`"-Wno-error=implicit-function-declaration"`。 これの意味するところは、「いつもなら、特定の関数が宣言される前にエラーは出すけど、今回はエラー出さないで」とのことらしい。
+
+詳しくは記事を参照願いたい。
+
+そしてこの記事は、ボクが通っていたRUNTEQというプログラミングスクールの先輩だった。いつも有益なアウトプットをしているので、ぜひtwitterフォローを検討してくださいな。
+
+（了）
+
+

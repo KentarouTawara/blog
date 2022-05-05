@@ -1,0 +1,50 @@
+---
+title: rake タスク内で処理を止めたい場合は return ではなく、next を利用するみたい。
+date: "2021-01-19T23:05:13+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/01/19/230513
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613680479999
+---
+
+こんにちは。
+
+とある案件のコードの rake タスクにこんなコードがありまして、、、
+
+```
+next unless Time.zone.today.on_weekday?
+```
+
+next? なんじゃこりゃ。となりまして、、、
+
+先輩「rake タスクには return じゃなくて next を使うんだよ！」
+
+と教えてもらいました。
+
+で、調べてみると、、、こんな記事がありました。
+
+[https://stackoverflow.com/questions/2316475/how-do-i-return-early-from-a-rake-task:embed:cite]
+
+いいねがたくさんついている回答いわく、
+
+> ブロックのなかでは、returnは使えない（ただし例外はある）
+
+みたいですね。なので next を使うそうです。
+
+ただし別の箇所でメソッドを定義して、そのなかで `return`を使用する、というやり方もあるみたいです。
+
+こんなふうなコードが紹介されてました。なるほど。
+
+```ruby
+task :foo do
+  do_something
+end
+
+def do_something
+  puts "startd"
+  return
+  puts "end"
+end
+```
+
+またひとつ知識が増えてよかったです！
+
+（了）

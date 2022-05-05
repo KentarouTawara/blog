@@ -1,0 +1,170 @@
+---
+title: Rails6 にBootstrapとJQueryとMaterial design for bootstrap 4をwebpackerで導入したメモ
+date: "2020-08-22T14:59:33+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/08/22/145933
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613618150583
+---
+
+こんにちは、たわらです。
+
+先日からポートフォリオの制作に着手しました。Rails newをしてとりあえずフロントまわりに必要なものを導入した際の手順をまとめる記事です。
+
+
+
+# 先人の知恵を借りたけどできなかった
+
+
+
+[https://qiita.com/sasakura_870/items/38e17d95d9497cf81413:title]
+
+
+
+
+
+[https://mebee.info/2020/08/06/post-15232/:title]
+
+
+
+
+[https://url4u.jp/rails6-material-design-for-bootstrap/:title]
+
+
+このあたりのブログを参考に導入をしてみた。
+
+```
+$ yarn add bootstrap bootstrap-material-design jquery popper.js
+```
+
+で、必要なファイルをインストールする。
+
+下記のようにエントリーファイルを作成する。
+
+```js
+# app/javascript/pack/application.js
+import 'bootstrap-material-design'
+import '../stylesheets/application'
+```
+
+cssを配置するディレクトリとファイルを作成する。
+
+```
+$ mkdir app/javascript/stylesheets
+$ touch app/javascript/stylesheets/application.scss
+```
+
+作成した`application.scss`に以下のコードを追加する。
+
+```scss
+@import '~bootstrap-material-design/scss/bootstrap-material-design';
+```
+
+そしてレイアウトファイルでエントリーファイルを読み込むように下記のコードを記載。（turbolinksは使ってません）
+
+```ruby
+= stylesheet_pack_tag 'application', media: 'all'
+= javascript_pack_tag 'application'
+```
+
+# Material design for bootstrap 4が利用できない
+
+ここまでの手順ではどうしてかMaterial design for bootstrap 4が反映されていませんでした。ただのbootstrapです。特にエラーもありません。
+
+
+
+なんでかなーと思って公式を確認すると、どうやらMaterial design for bootstrap 4のバージョンが違うようでした。
+
+```
+$ yarn add bootstrap bootstrap-material-design jquery popper.js
+```
+
+のやり方だとバージョン`4.1.3`になっていました。
+
+しかし公式を見てみると、
+
+```
+npm install bootstrap-material-design@4.1.1
+```
+
+と書いてあります！　
+
+
+
+[https://fezvrasta.github.io/bootstrap-material-design/docs/4.0/getting-started/download/:title]
+
+
+なので、公式にならってインストールします。これで`package.json`にてバージョンが`4.1.1`に変更されます。
+
+すると、下記のエラーがはじめて出てきました。とにかく進んでるっぽいですね。
+
+```
+ERROR in ./app/javascript/stylesheets/application.scss (./node_modules/css-loader/dist/cjs.js??ref--7-1!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./app/javascript/stylesheets/application.scss)
+Module build failed (from ./node_modules/sass-loader/dist/cjs.js):    @include form-validation-state("valid", $label-color);
+            ^
+      Mixin form-validation-state is missing argument $icon.
+      in /Users/kentaroutawara/programing/nisatume/nisatume/node_modules/bootstrap-material-design/scss/mixins/_forms.scss (line 159, column 14)
+Error:
+    @include form-validation-state("valid", $label-color);
+            ^
+      Mixin form-validation-state is missing argument $icon.
+      in /Users/kentaroutawara/programing/nisatume/nisatume/node_modules/bootstrap-material-design/scss/mixins/_forms.scss (line 159, column 14)
+    at options.error (/Users/kentaroutawara/programing/nisatume/nisatume/node_modules/node-sass/lib/index.js:291:26)
+```
+
+で、エラー箇所の
+
+```
+Mixin form-validation-state is missing argument $icon.
+```
+
+で試しにググってみると、別のrepoのissueに出会う。そのものズバリの内容でした。いいねがたくさんついてる解決法を実施するとうまくいきました！
+
+
+
+[https://github.com/creativetimofficial/material-kit/issues/154:embed:cite]
+
+
+`node_modules/bootstrap-material-design/scss/mixins/_forms.scss`の159行目を
+
+```
+@include form-validation-state("valid", $label-color);
+```
+
+から
+
+```
+@include form-validation-state("valid", $label-color, "none");
+```
+
+に変更します。
+
+
+
+この変更による影響範囲は正直把握しきれませんが、これでMaterial design for bootstrap 4は反映されます。
+
+
+
+# 反省
+
+何はともあれ公式を読んでみることは大事です
+
+
+
+## 参考文献
+
+
+
+[https://qiita.com/sasakura_870/items/38e17d95d9497cf81413:title]
+
+
+
+
+[https://mebee.info/2020/08/06/post-15232/:title]
+
+
+
+
+[https://url4u.jp/rails6-material-design-for-bootstrap/:title]
+
+
+[https://fezvrasta.github.io/bootstrap-material-design/docs/4.0/getting-started/download/:title]
+

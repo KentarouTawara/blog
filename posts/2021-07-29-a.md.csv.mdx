@@ -1,0 +1,48 @@
+---
+title: Rubyの勉強をする〜組み込みライブラリ、Timeクラス〜
+date: "2021-07-29T21:54:32+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/07/29/215432
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613791845207
+---
+
+こんにちは、たわらです。
+
+Ruby技術者認定試験Silverを受験するために勉強しております。
+
+組み込みライブラリとTimeクラスについて学習したのでその記録を残す。
+
+#### ライブラリ？
+
+そもそもライブラリとは、ざっくりと、、、
+
+>便利なプログラムの部品をいっぱい集めて、ひとまとめにしたファイルのこと
+
+とのことです。
+
+参照
+
+[https://wa3.i-3-i.info/word1473.html]
+
+
+Rubyはたくさんライブラリがあります。いろいろある、、、すごい。これは標準ライブラリと呼ばれる一群ですね。
+
+
+[https://docs.ruby-lang.org/ja/latest/library/_builtin.html:title]
+
+
+でなかには、組み込みライブラリというものがあります。これらはrequireを用いなくても利用できます。
+
+[https://docs.ruby-lang.org/ja/latest/library/_builtin.html:title]
+
+#### TimeクラスとDateクラス？
+
+日付を扱うクラスにはTimeクラスとDateクラスがあります。
+
+何が違うのかというと、、、
+Timeクラスは組み込みライブラリで、Date クラスは標準ライブラリだけど組み込みライブラリではないのです。
+
+なので利用する場合、Dateクラスにはrequireが必要なのですね。Timeクラスには必要ないみたいです。
+
+requireが必要ないのでTimeクラスを使うのが定石っぽい。
+
+（了）

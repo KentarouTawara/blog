@@ -1,0 +1,27 @@
+---
+title: sorceryの認証の参照をメールアドレスから変更する方法
+date: "2022-02-21"
+---
+
+こんにちは、たわらです。
+
+個人開発にて、認証に`sorcery`というgemを使っている。
+簡単にログイン機能を実装することができる。
+ただ、デフォルトでメールアドレスを参照するようになっている。
+今回はメールアドレスではなく、ユーザーの名前を参照するように変更を加えた。
+
+```ruby
+# config/initializer/sorcery.rb(245行目)
+
+  config.user_config do |user|
+    # -- core --
+    # Specify username attributes, for example: [:username, :email].
+    # Default: `[:email]`
+    #
+    user.username_attribute_names = [:username]
+```
+
+たったこれだけで、認証の際にUserモデルの`username`カラムを参照してくれます。
+
+
+（了）

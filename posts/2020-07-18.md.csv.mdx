@@ -1,0 +1,72 @@
+---
+title: hoge ll= foo はhogeがnilまたはfalseなら、fooをhogeに代入する
+date: "2020-07-18T12:40:28+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/07/18/124028
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613600185878
+---
+
+
+こんにちは、たわらです。
+
+本記事は演算子`||=`について整理した記事です。
+
+## 事例　nilだったら空文字入れたい
+
+ある変数がnilだった場合に、空文字を代入したいことがありました。ない知恵を絞ってこんなコードを書きました。
+
+```ruby
+if sentence.body.nil?
+ sentence.body = ''
+else
+ sentence.body
+end
+```
+
+なんだか冗長な感じを受けます。
+
+
+
+## 自己代入を使おう
+
+このコードは自己代入を使うとすっきりと書くことができます。
+
+```ruby
+sentence.body ||= ''
+```
+
+これは、下記のコードを省略したものです。
+
+```ruby
+sentence.body = sentence.body || ''
+```
+
+右辺に注目します。`ll`演算子は式全体の真偽値が確定した時点で式の評価を終わらせ、そのときの戻り値を返します。
+
+つまり、sentence.bodyがfalseでもnilでもない真の値であれば、`sentence.body = sentence.body`となります。一方で、sentence.bodyがfalseかnilの場合、`sentence.body =  ''`となります。
+
+Rubyのレファレンスには、
+
+```ruby
+a ||= 1         # a が偽か未定義ならば1を代入。初期化時のイディオムの一種。
+```
+
+と説明されています。初期化時に使うことが多いようです。なるほど。
+
+また、チュリー本には、
+
+> X ||=A というコードを見たら「変数Xがnilまたはfalseなら、AをXに代入」と頭の中で読み替えるようにしてください
+
+とまで書いてあります（pp174）。
+
+論理演算子は慣れないと、ぎょっと体が固まってしまいます。早く慣れたいものです。
+
+## 参考文献
+
+
+[https://docs.ruby-lang.org/ja/latest/doc/spec=2foperator.html#selfassign:embed:cite]
+
+
+
+[https://amzn.to/3hargHX:embed:cite]
+
+

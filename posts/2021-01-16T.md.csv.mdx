@@ -1,0 +1,127 @@
+---
+title: letter_opener でメールを受信できない、、、あ、ジョブ管理ライブラリ起動してなかったからか
+date: "2021-01-16T10:31:43+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/01/16/103143
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613678901333
+---
+
+こんにちは。
+
+とある日仕事をしていて、、、
+
+「なんで会員登録のメールはすぐに受信するのに、こっちの処理で飛ばしてるはずのメールはすぐに受信できないんだろう？」と不思議がっていました。
+
+で、先輩に質問すると、、
+
+「メールとか、重い処理は本流からはずれて処理をするんだよ。`bundle exec rake job:work`をローカルで実行すれば、メールを確認できるはずだよ」
+
+と言われて、そのとおり実行すると、無事にメールを受信できて、開発が前進しました。
+
+ということで本記事は、ジョブ管理のお話。
+
+### ActionJob というものがある
+
+時間のかかる処理をリアルタイムで行うと、その間、ユーザーは待たされてしまいます。大量データの集計処理や外部サービスの連携、そしてメール送信などが例に挙げられます。
+
+リアルタイムで行う必要がない処理もあります。そのような処理（ジョブ）は待ち行列（キュー）に登録しておき、あとから実行（非同期実行）することで、アプリ本体のレスポンスを改善できます。
+
+標準実装されている ActionJob はジョブの登録から実行までを管理するためのモジュールです。ただし、ActionJobそれ自体は、ジョブ操作のためのインターフェースにすぎません。
+
+実際にジョブを実行するのは、サードパーティから提供されているジョブ管理ライブラリです。たとえば、
+
+
+* Delayed Job
+* Sidekiq
+
+などがあります。詳しくは下記参照。
+
+[https://api.rubyonrails.org/v6.1.0/classes/ActiveJob/QueueAdapters.html:title]
+
+上記の説明は、下記の本のpp 536参照。
+
+[https://www.amazon.co.jp/Ruby-Rails-5%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0-%E5%B1%B1%E7%94%B0-%E7%A5%A5%E5%AF%9B/dp/4774188832:embed:cite]
+
+
+
+アダプターを切り替えると、アプリのコードをそれほど修正しなくても、ジョブ管理ライブラリを変更できます。便利！
+
+```
+config/application.rb
+# delyaed_jobの場合
+config.active_job.queue_adapter = :delayed_job
+
+# sidekiqの場合
+config.active_job.queue_adapter = :sidekiq
+
+```
+
+### キューに登録してあるジョブを実行するには
+
+ジョブ管理ライブラリによって違うようなので、利用しているライブラリのGithubを確認しましょう。
+
+`delayed_job`の場合は、`bundle exec rails jobs:work`のようです。
+
+[https://github.com/collectiveidea/delayed_job/blob/5ac5adea8d18325d0470eeebfa81227b1f5961e3/README.md:embed:cite]
+
+### deliver_now と deliver_later
+
+`Action Mailer`によるメール送信にはいくつかのメソッドが用意されています。
+
+`deliver_now`は、同期的にその場でメール送信を行うメソッドです。
+
+`deliver_later`は、非同期でメールを送信します。これにより、Webのリクエスト/レスポンスサイクルの外でメールを送信できるので、ユーザーは送信完了を待つ必要がないのです。
+また、`deliver_latar(wait: 5.minutes)`のようにすると５分後に送信するように指示もできます。いろいろなオプションがあるみたいです。
+
+(このメソッドの違いはRUNTEQというプログラミングスクールのカリキュラムにありました、、、身についていなかった、、、oh ）
+
+
+ちなみにログにも、、、
+
+```
+[ActiveJob] Enqueued ActionMailer::DeliveryJob (Job ID: hogehogehogehogeho) to DelayedJob(mailers) with arguments: "Hogehogehoge", "notify_hogehoge", "hogehoge", 33, 44
+
+```
+
+メール送信の処理（ジョブ）が待ち行列に追加（Enqueued）されたログが表示される。たぶん。
+
+
+### まとめと学び
+
+`deliver_later`がメール送信を非同期処理で行うこと、待ち行列のジョブの実行の仕方を知らなかった、という２つの原因が重なって開発が止まってしまった。
+
+ActionJobと非同期処理について理解が深まったので良しとしよう。
+
+### 参考文献
+
+[https://www.htmlhifive.com/conts/web/view/study-room/async-programming-with-deferred:title]
+
+
+[https://qiita.com/kiyodori/items/da434d169755cbb20447:title]
+
+
+[https://stackoverflow.com/questions/45481751/bundle-exec-rake-jobswork:title]
+
+
+[https://qiita.com/shunsuke227ono/items/c29119a348f120c5c13a#comments:title]
+
+
+[https://railsguides.jp/action_mailer_basics.html#%E3%83%A1%E3%82%A4%E3%83%A9%E3%83%BC%E3%82%92%E5%91%BC%E3%81%B3%E5%87%BA%E3%81%99:title]
+
+
+[https://www.amazon.co.jp/Ruby-Rails-5%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0-%E5%B1%B1%E7%94%B0-%E7%A5%A5%E5%AF%9B/dp/4774188832:title]
+
+
+[https://www.amazon.co.jp/%E3%83%91%E3%83%BC%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88-Ruby-Rails-%E3%80%90%E5%A2%97%E8%A3%9C%E6%94%B9%E8%A8%82%E7%89%88%E3%80%91-Perfect/dp/4297114623/ref=sr_1_1?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&dchild=1&keywords=%E3%83%91%E3%83%BC%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88rails&qid=1610760551&s=books&sr=1-1:title]
+
+
+
+
+
+
+
+
+
+
+
+
+

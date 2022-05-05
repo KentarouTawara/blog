@@ -1,0 +1,46 @@
+---
+title: 超基本 CRUDで他人の投稿の編集・更新を防ぐコントローラーでの注意点
+date: "2020-09-22T15:16:01+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/09/22/151601
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613630916633
+---
+
+こんちには、たわらです。
+
+ポートフォリオを作成していて、一段落したので講師のかたに簡単にコードを見てもらったのですが、超基本的なところの理解ができていなかったので、反省をこめてメモを残しておきます。
+
+編集・更新は投稿した本人のみができるようでなければならないのです。current_userに紐付いている投稿群から検索するようにコードを書きます。
+`current_user.posts`とするところがポイントです。
+
+```ruby
+  # ユーザー全員がアクセスしてよい
+  def show
+    @post = Post.find(params[:id])
+  end
+
+
+  ########## Bad ##########
+  # これだとposts/18/editの数字の部分を改ざんすれば他人の投稿を編集・更新できる
+  def edit
+    @post = Post.find(params[:id])
+  end
+
+  def update
+    @post = Post.find(params[:id])
+    # 必要な処理
+  end
+
+　########## Good ##########
+　# これだと現在のユーザーの投稿から検索するので他人の投稿へのアクセスを防げる
+  def edit
+    @post = current_user.posts.find(params[:id])
+  end
+
+  def update
+    @post = current_user.posts.find(params[:id])
+    # 必要な処理
+  end
+
+```
+
+かつて学習した超基本が身についてないとショックを受けますが、恥はかきすて、と考えて素直に復習しようっと。

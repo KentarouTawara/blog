@@ -1,0 +1,77 @@
+---
+title: tagを使ってフラッシュメッセージを実装する
+date: "2022-04-12"
+---
+
+こんちには、たわらです。
+
+久しぶりに個人開発をしていて、フラッシュメッセージを実装したのでそのメモです。
+
+こんな感じで`tag`メソッドを利用します。htmlをいい感じに生成してくれます。
+
+### tagヘルパーの使い方
+
+例を見ればだいたい理解できます。[rails](https://github.com/rails/rails/blob/984c3ef2775781d47efa9f541ce570daa2434a80/actionview/lib/action_view/helpers/tag_helper.rb#L299)から拝借。
+
+```ruby
+   tag("br")
+   # => <br />
+
+   tag("br", nil, true)
+   # => <br>
+
+   tag("input", type: 'text', disabled: true)
+   # => <input type="text" disabled="disabled" />
+
+   tag("input", type: 'text', class: ["strong", "highlight"])
+   # => <input class="strong highlight" type="text" />
+
+   tag("img", src: "open & shut.png")
+   # => <img src="open &amp; shut.png" />
+
+   tag("img", { src: "open &amp; shut.png" }, false, false)
+   # => <img src="open &amp; shut.png" />
+
+   tag("div", data: { name: 'Stephen', city_state: %w(Chicago IL) })
+   # => <div data-name="Stephen" data-city-state="[&quot;Chicago&quot;,&quot;IL&quot;]" />
+
+   tag("div", class: { highlight: current_user.admin? })
+   # => <div class="highlight" />
+```
+
+### フラッシュメッセージを実装する
+
+`tag`ヘルパーを利用して、フラッシュメッセージを実装するとこんな感じです。
+cssにはTailwindCSSのコンポーネントライブラリである[daisyUI](https://daisyui.com/)を使ってます。適宜無視してください。
+
+```ruby:app/views/shared/_flash_message.html.slim
+- flash.each do |message_type, message|
+  = tag.div(class: "alert alert-#{ message_type } shadow-lg")
+    = tag.p(message)
+```
+
+そして上記のパーシャルをviewに読み込ませます。
+
+```ruby:application.html.slim
+  body
+    # 省略
+    = render  'shared/flash_message'
+```
+
+`controller`はこんなかんじ。
+
+```ruby
+  def hoge
+    if @hoge.save
+      redirect_to works_path, success: '小説を投稿しました'
+    else
+      flash.now[:error] = '小説投稿に失敗しました'
+      render :new, status: :unprocessable_entity
+    end
+  end
+```
+
+参考文献
+- [Rails: 5.1以降のtagヘルパー記法はcontent_tagより便利｜TechRacho by BPS株式会社](https://techracho.bpsinc.jp/hachi8833/2022_01_13/48191)
+
+- [rails/tag_helper.rb at 984c3ef2775781d47efa9f541ce570daa2434a80 · rails/rails](https://github.com/rails/rails/blob/984c3ef2775781d47efa9f541ce570daa2434a80/actionview/lib/action_view/helpers/tag_helper.rb#L299)

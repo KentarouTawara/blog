@@ -1,0 +1,82 @@
+---
+title: Enumを活用すれば整数値に名前をつけられる
+date: "2020-07-17T10:39:18+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/07/17/103918
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613599657741
+---
+
+こんにちは、たわらです。
+
+Enumについて簡単に整理した記事です。
+
+
+## Enumって？
+
+「列挙型」という意味だそうです。
+
+> Wikipediaによれば「**列挙型**（れっきょがた、enumerated typeあるいはenumeration type）とは、[コンピュータプログラミング](https://ja.wikipedia.org/wiki/プログラミング_(コンピュータ))において、プログラマが選んだ各々の[識別子](https://ja.wikipedia.org/wiki/識別子)（列挙子）をそのまま有限集合として持つ[抽象データ型](https://ja.wikipedia.org/wiki/抽象データ型)である」
+
+ざっくり説明すれば、一連の整数値に対して複数の変数名をつけること、と言えます。
+
+
+
+## こんなふうに使う
+
+ユーザーのサービスに対する権限を定義する必要があるとします。
+
+```ruby
+class AddColmunToUsers < ActiveRecord::Migration[5.2]
+  def change
+    add_column :users, :role, :integer, null: false, default: 0
+  end
+end
+```
+
+こんな感じで、Userクラスに`role`カラムを追加します。データ型は`integer`です。defaultを0にしておきます。
+
+次にUserクラスに次のように記述します。
+
+```ruby
+enum role: { general: 0, admin: 1 }
+```
+
+こうすることで、０と1にそれぞれgeneralとadminという名前を付与することができます。（言い方として、roleカラムにenum属性を宣言する、という言うのでしょうか。このあたりがわからないですね、、、）
+
+
+
+## 便利メソッドが使えるから属性の確認が効率よくできる！
+
+enum属性を付与することで、ユーザーがどの権限かを簡単に確認することができます。
+
+たとえば、管理者権限のユーザーでしか許可したくないプログラムがあるとします。
+
+enumを定義していない場合は、このように書くことになります。
+
+```ruby
+実行したい処理　if @user.role == 1
+```
+
+このコードのいまいちなところは、1が何を示しているかわからないことになります。
+
+このデメリットをenumは解消してくれます。enum属性を宣言すると便利メソッドが使えるようになるのです。
+
+```ruby
+実行したい処理　if @user.admin?
+```
+
+このコードは自然言語に近いかたちで理解ができます。管理者か？ とユーザーオブジェクトに聞いている感じですね。adminであればtrue、そうでなければfalseを返すメソッドが使えるようになります。
+
+他にも破壊的なメソッドなどあるので都度確認しましょう。
+
+
+
+## 参考文献
+
+
+[https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html:embed:cite]
+
+
+
+[https://qiita.com/ozackiee/items/17b91e26fad58e147f2e:embed:cite]
+
+

@@ -1,0 +1,41 @@
+---
+title: 大量のレコードを取得してループ処理する場合は、eachではなくfind_eachメソッドを使う
+date: "2021-07-29T00:45:51+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/07/29/004551
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613791587376
+---
+
+こんにちは、たわらです。
+
+さて、大量のレコードを取り出して、ループで処理するときってありますよね。
+たとえば新機能をリリースするために、ある既存のテーブルのいくつかのフラグがtrueであれば、新しく追加したカラムにtrueを入れるときとか。
+
+そんなときeachを使ってこんなふうに書く方法はすぐに思いつきます。
+
+```ruby
+ManyHoge.each do |mh|
+  mh.new_column = true if mh.old_column_1 == true && mh.old_column_2 == true
+end
+```
+
+ただ既存レコードが大量にある場合があります。8万件とか。その場合、eachだとすべてのレコードを一気に取得して、メモリに保存してしまいます。メモリが足りないとフリーズしてしまいます。
+
+そこで、一気にレコードを取得するのではなく分割して取得・処理する方法を利用します。find_eachメソッドです。
+
+```ruby
+ManyHoge.find_each do |mh|
+  mh.new_column = true if mh.old_column_1 == true && mh.old_column_2 == true
+end
+```
+
+デフォルトで1,000件ずつ分割して取得します。便利ですね！
+
+参考
+
+
+[http://cloudcafe.tech/?p=2446:title]
+
+
+[https://railsdoc.com/page/find_each:title]
+
+（了）
