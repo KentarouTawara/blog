@@ -1,0 +1,163 @@
+---
+title: 楽天トラベルAPIを叩いてくれるLineBotを作った！
+date: "2021-01-01T23:15:33+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/01/01/231533
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613672952323
+---
+
+こんにちは、たわらです。
+
+ハンズオン型の教材を買って実践してみました。
+
+# 実践した教材
+
+これをやってみました。LineBotって作ったことなかったので、いい勉強になるかな、と思って。
+こんな gem あるんだ、と勉強になったので、よかったです。
+
+Ruby on Rails で宿泊検索 LINE Bot を作ろう！ | Techpit
+
+[https://www.techpit.jp/courses/131:embed:cite]
+
+# 楽天トラベルAPIを叩いてくれるLineBot
+
+キーワードを入れると、楽天トラベルAPIを叩いてくれて、宿泊施設を返してくれます。
+熟練のかたは、単純だな、と思うかもしれませんが、LineBotすげー、とボクは思ってしまいました！
+
+[![Image from Gyazo](https://i.gyazo.com/f6f63dd43d5c1cd803841805b6e48fdf.gif)](https://gyazo.com/f6f63dd43d5c1cd803841805b6e48fdf)
+
+# 学んだこと
+
+
+### 環境構築で詰まる
+
+```ruby
+❯ bin/webpack-dev-server
+node:internal/modules/cjs/loader:903
+  throw err;
+  ^
+Error: Cannot find module 'webpack'
+Require stack:
+- /Users/tawarakentarou/kusoapp/linebot/node_modules/webpack-dev-server/bin/webpack-dev-server.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:900:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:745:27)
+    at Module.require (node:internal/modules/cjs/loader:972:19)
+    at require (node:internal/modules/cjs/helpers:88:18)
+    at Object.<anonymous> (/Users/tawarakentarou/kusoapp/linebot/node_modules/webpack-dev-server/bin/webpack-dev-server.js:12:17)
+    at Module._compile (node:internal/modules/cjs/loader:1083:30)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1112:10)
+    at Module.load (node:internal/modules/cjs/loader:948:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:789:14)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:72:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/tawarakentarou/kusoapp/linebot/node_modules/webpack-dev-server/bin/webpack-dev-server.js'
+  ]
+}
+```
+何のこっちゃと思ったら、どうやらnode.jsのverが悪さをしていたらしい。というか、systemにもともと入っていたnodeを使っていた。`15.?.?`を使っていた。
+
+親切なRUNTEQ生が、
+
+> rails 6.0.3.4とnode ltsバージョンでwebpack使ってますが、エラー出ないですよ！
+
+と教えてくれた。ltsバージョン？？？ Long Term Support ( 長期サポート)のこと。とりあえずこのバージョンを入れると解決！　友人に感謝！　
+
+ダウンロード | Node.js
+
+[https://nodejs.org/ja/download/:embed:cite]
+
+
+### Messaging APIの概要
+
+Lineアプリとサーバー（Railsとか）の間にLineプラットフォームなるものがある。これが、いろいろ仕事をしてくれるみたい。それぞれのデータのやり取りする場のことを、チャネルというらしい。
+
+Messaging APIの概要 | LINE Developers
+
+[https://developers.line.biz/ja/docs/messaging-api/overview/#page-title:embed:cite]
+
+LINE Developersコンソールのアカウント作成してチャネルを作成する
+
+[https://developers.line.biz/ja/services/messaging-api/:embed:cite]
+
+LINEではLINE Botの開発を簡単にはじめることができるLINE Messaging API SDKが配布されている。もちろんrubyもある。これでいろんなメソッドが使える！　gem `line-bot-api`というものがある！
+
+[https://developers.line.biz/ja/docs/messaging-api/line-bot-sdk/#page-title:embed:cite]
+
+リポジトリにはexampleフォルダがあって、オウムがえしのソースが載ってる。
+
+line/line-bot-sdk-ruby: LINE Messaging API SDK for Ruby
+
+[https://github.com/line/line-bot-sdk-ruby:embed:cite]
+
+### ngrok
+
+ngrok - secure introspectable tunnels to localhost
+
+[https://ngrok.com/:embed:cite]
+
+
+外部から開発環境にアクセスすることができるようになるツール。専用のURLを発行してくれる。`https`も！ 読み方はわからない。
+
+rails 6 には開発環境を外部アクセスから守るために指定されたホスト名が必要になる。`localhost`とか。なので、ngrokの発行するURLは防御されてしまう。`config/environments/development.rb`に細工が必要になる。
+
+### 環境変数について
+
+機密情報はOS上に保存して、必要なときに呼び出す。そのように管理された情報を環境変数と呼ぶ。復習になった。
+
+こういう便利なgemもある。
+
+bkeepers/dotenv: A Ruby gem to load environment variables from `.env`.
+
+[https://github.com/bkeepers/dotenv:embed:cite]
+
+
+### 処理が走ってるかを確認する方法
+`controller`に、
+
+```ruby
+p '正常に動いてるよ'
+```
+
+と書けば、サーバーログで処理が走っているかを確認することができる。たしかに！
+
+### Hashクラス
+
+key?メソッドは変数.key?('キー名')とすることで、指定したキー名が存在した場合にtrueを返す。
+
+### APIの仕様について
+
+どんなパラメータを追加すると、どんなふうに返すか、ということについてきちんと理解すること。
+
+### Flex Message
+
+Line上でカードみたいなふうに情報を表示できる。そのことを`Flex Message`と呼ぶらしい。そのシミュレーターもある。これにはいたく感動した！雛形がいくつかあるので、簡単にそれっぽいデザインが作れる。シミュレーターでデザインを作成し、それを`json`形式で吐き出せるので、そのような形になるようにサーバー側でロジックを組む、という開発の流れになる。
+
+Flex Messageの要素 | LINE Developers
+
+[https://developers.line.biz/ja/docs/messaging-api/flex-message-elements/:embed:cite]
+
+
+[https://developers.line.biz/flex-simulator/:embed:cite]
+
+### Herokuでの環境変数の設定
+
+```
+
+heroku config:set LINE_CHANNEL_SECRET="xxxxxxxx"
+
+```
+
+### HTTP通信
+
+http通信を扱いやすくするgem。
+
+nahi/httpclient: 'httpclient' gives something like the functionality of libwww-perl (LWP) in Ruby.
+
+[https://github.com/nahi/httpclient:embed:cite]
+
+
+# 感想
+
+はじめてLineBotを作ってみた。適宜資料も紹介されてあってわかりやすかったです。コードはコピペを多用しましたが、ざっくり流れが把握できたので満足です。
+
+次は、Line上でアプリを動かせるという`LINE Front-end Framework(Liff)`にチャレンジしたいですね！

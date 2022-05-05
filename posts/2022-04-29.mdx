@@ -1,0 +1,36 @@
+---
+title: 三文小説のOGPをCloudinaryを使って実装した
+date: "2022-04-29"
+---
+
+こんにちは、たわらです。
+
+小説投稿サービス『三文小説』でOGPを実装しました。そのメモ。
+
+[https://sanmonsyousetu.com/](https://sanmonsyousetu.com/)
+
+### これを参考にすればできる
+
+Cloudinaryの使い方から実装方法まで解説してある。これさえあれば簡単に実装できる。
+
+[Cloudinaryで動的にOGP画像を生成する方法 | catnose](https://catnose.me/notes/cloudinary-dynamic-ogp-image)
+
+メタタグなどの実装はこちらを参考。`gem 'meta-tags'`を使えば必要なmetaタグをきれいに出力してくれる。
+
+[【Rails】 meta-tags と Cloudinary を使って動的にOGP画像を作る - Qiita](https://qiita.com/yuppymam/items/21a65d32fed9d7ecceba#4-%E5%80%8B%E5%88%A5%E3%81%AEogp%E7%94%BB%E5%83%8F%E7%94%A8url%E3%82%92-set-%E3%81%99%E3%82%8B)
+
+### target="_blank" だけだと脆弱性がある
+
+twitterシェアボタンを押下時に別タブで開くようにするために、target="blank"を用意する必要があるけど、
+それだけだと脆弱性がある。`rel="noopener noreferrer"`をつける必要がある。
+
+実装例。
+
+```ruby
+    = link_to 'お問い合わせはDMください', "https://twitter.com/kentarotawara", target: "_blank", rel: "noreferrer noopener"
+```
+
+[「別タブで開く」リンク(target="_blank")は脆弱性あり？【SEO情報まとめ】 | 海外&国内SEO情報ウォッチ | Web担当者Forum](https://webtan.impress.co.jp/e/2020/03/13/35510)
+
+
+(了)

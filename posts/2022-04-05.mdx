@@ -1,0 +1,58 @@
+---
+title: tailwindcss/typographyを上書きする方法
+date: "2022-04-05"
+---
+
+こんにちは、たわらです。
+
+ある記事で、aタグの長い英文字が親要素をはみ出てしまい、画面レイアウトが崩れていました。
+それに気づいて他記事を確認すると、pタグ、liタグでも同様の問題を発見しました。
+
+英文字テキストを要素内で折り返す方法を調べてみると、該当タグにcssで`word-break: break-all`を
+当てればいいことがわかりました。
+
+で、実際に@tailwindcss/typographyを下記のコードを記述して上書きしました！
+
+```js
+// tailwind.config.js
+module.exports = {
+  // 省略
+  theme: {
+    extend: {
+      // ↓ココから追記
+      typography: {
+        DEFAULT: {
+          css: {
+            a: {
+              wordBreak: 'break-all'
+            },
+            p: {
+              wordBreak: 'break-all'
+            },
+            li: {
+              wordBreak: 'break-all'
+            },
+          },
+        },
+      },
+      // ↑ココまで追記
+    },
+  },
+  plugins: [require('@tailwindcss/typography')],
+}
+```
+
+上書きは公式の[こちら](https://tailwindcss.com/docs/typography-plugin#customizing-the-css)
+を参照。
+
+cssの記述に少しハマりました。`CSS-in-JS syntax `でないといけません。キーはキャメルケースで値は''で囲う。
+[こちら](https://tailwindcss.com/docs/plugins#css-in-js-syntax)を参照。
+
+ちなみに、`@tailwindcss/typography`のstyleは[こちら](https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js)で確認できますので、ご参考に。
+
+#### 参考文献
+[tailwindcssのbreak-wordsで改行しなくてハマった話](https://zenn.dev/maztak/articles/7ec72edecfacd3)
+
+[HTML/CSS｜スペース/タブ/改行(word-break, overflow-wrap) - わくわくBank](https://www.wakuwakubank.com/posts/285-html-css-word/)
+
+（了）

@@ -1,0 +1,47 @@
+---
+title: 【each文の復習】趣味嗜好の合致度計算式
+date: "2021-01-04T22:01:51+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/01/04/220151
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613674214533
+---
+
+こんにちは。
+
+rubyの勉強をきちんとやってこなかった。 いわゆるチェリー本をやるには、ちと気合が足りない。
+なので、udemyの初心者向けの教材で復習してみることにしました。
+
+【Rubyで入門(上巻)】はじめてのプログラミング ー "ちゃんと" Ruby を学ぼう！ ー 基礎構文から始めよう！編 | Udemy
+
+[https://www.udemy.com/course/1-ruby-r/:embed:cite]
+
+ほんとうに基礎から解説してくれているので、さくっと見れてよかったです。
+
+# 趣味嗜好の合致度計算式
+
+「私の好きな作家はねー、、、」と女性が言い始めたら、「趣味は合うのかなー」と思ってしまうのが本好きのサガ、だと思う。
+
+そこで、好きな作家がかぶったら、いいねポイントが上がる、ロジックを書いてみた。
+
+hoge.rbに以下を書く。
+
+```ruby
+
+her_favorite = [ "安部公房", "村上春樹", "中村文則", "乙一", "伊坂幸太郎", "乙一", "小川洋子", "見田宗介", "高田保馬"]
+
+like = 0
+
+her_favorite.each do |author|
+  my_favorite = [ "村上春樹", "伊坂幸太郎", "小川洋子"]
+  like += 1 if my_favorite.include?(author)
+end
+
+puts like
+```
+で、これをvimで出力するには、こんなふうにやればよい。
+
+[![Image from Gyazo](https://i.gyazo.com/4df3827f9a103b8e6301bbe7b32edbce.gif)](https://gyazo.com/4df3827f9a103b8e6301bbe7b32edbce)
+
+相性合致度が 3 ポイント だということがわかる。
+
+簡単なロジックでも勉強になっていいですね！
+

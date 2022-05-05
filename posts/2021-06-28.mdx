@@ -1,0 +1,100 @@
+---
+title: Userにbelong to で紐づくデータをseed_fuで作るときにeach_with_indexが活躍した
+date: "2021-06-28T00:58:40+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2021/06/28/005840
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613780155327
+---
+
+こんにちは、たわらです。
+
+今回は業務で学んだお話です。
+
+### 背景
+
+User に belong to で紐づくseed データを作成する必要がありました。
+たとえばこんな感じ。業務コードをだいぶぼかしているので変な感じするかもですが目をつむってください。
+
+```ruby
+UserNickname.seed do |s|
+  s.id = 1
+  s.user_id = User.find_by(email: "user_001@bt.com")
+  s.nickname = "hogetarou"
+end
+```
+
+で、50人いるuserのseedデータすべてにnicknameをーー同じでもーー付与しなければならない。
+
+### 愚かな対処
+
+ボクはなにも考えずに50人分全員ベタ打ちで対処した。長い時間をかけて、こんなのエンジニアらしくないと頭では思いながら、、、
+
+```ruby
+UserNickname.seed do |s|
+  s.id = 1
+  s.user = User.find_by(email: "user_001@bt.com")
+  s.nickname = "hogetarou"
+end
+
+UserNickname.seed do |s|
+  s.id = 2
+  s.user = User.find_by(email: "user_002@bt.com")
+  s.nickname = "hogetarou"
+end
+
+.
+.
+.
+
+UserNickname.seed do |s|
+  s.id = 50
+  s.user = User.find_by(email: "user_050@bt.com")
+  s.nickname = "hogetarou"
+end
+
+```
+
+### 先輩のご指摘
+PRレビューをすると「User.allをeachで回して作成する方が良さそう」とコメントされる。
+
+なんと、その手があったか！
+
+で、こんなふうに書いた。300行くらいあったコードがわずか10行程度になりました。すごい。
+
+```ruby
+seed_id = 1
+User.all.each do |user|
+  UserNickname.seed do |s|
+    s.id = seed_id
+    s.user_id = user.id
+    s.nickname = "hogetarou"
+  end
+  seed_id += 1
+end
+```
+
+### each_with_indexの登場
+
+「Rubyっぽくないコードになっちゃってるね。each_with_indexを使うといいよ」と先輩がPRに再度コメントした。細かいところまで見てもらえてうれしい。seed_id += 1 のところらへんがRubyならもっとうまく書けるとのこと。
+
+なるほど、each_with_index （!） どこかで読んだことあるメソッドだった。先輩に聞きながら実装すると、こんなふうになった。
+
+```ruby
+User.all.each_with_index do |user, i|
+  UserOrigin.seed do |s|
+    s.id = i + 1
+    s.user_id = user.id
+    s.nickname = "hogetarou"
+  end
+end
+```
+要素とそのインデックスをブロックに渡して、インデックスをブロック内で使えるのですね。
+ちなみにインデックスは0からはじまるので、idなど1から開始したい場合は`i + 1`とします。
+
+### ひとこと
+
+ベタ打ちで時間をかけて書いたコードがとてもすっきりとしました。時間を無駄にしてしまいましたが、「そういう経験も意外と大事だよ」と先輩は言います。たしかに長いコードを短くできた快感がありました。いい経験ができました。
+
+参考文献
+[https://docs.ruby-lang.org/ja/latest/method/Enumerable/i/each_with_index.html:embed:cite]
+
+

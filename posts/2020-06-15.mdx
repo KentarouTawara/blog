@@ -1,0 +1,58 @@
+---
+title: ハッシュ情報を渡せる
+date: "2020-06-15T23:55:16+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/06/15/235516
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613585591805
+---
+
+こんにちは、たわらです。
+
+本記事は、ハッシュについての気づきを簡単にまとめたものです。
+
+## ハッシュ形式でデータを渡せる
+
+こんなふうな、コードを書いていました。
+
+```ruby
+<%= link_to comment_path(comment),
+      id: "js-edit-comment-button-for-comment-#{comment.id}",
+      data: { comment_id: comment.id },
+      remote: true do %>
+```
+
+`data: { comment_id: comment.id }`の部分に注目ですね。
+
+
+
+情報を渡した先では、`comment_id`として`comment.id`を使用してくださいね、としているわけです。
+
+
+白状すると、〇〇として△△を使うようにするためには、こんなふうに書くものだ、と思ってました。
+
+
+
+これはハッシュ形式で渡しているわけです。｛ キー: 　値　｝という形です。言われてみれば、当たり前ですね。でもこれに気づいたときは、あっと声が出ました。アハ体験です。
+
+
+
+```ruby
+render json: { comment: @comment, errors: { messages: @comment.errors.full_messages } }
+```
+
+ここも、ハッシュ形式になってますね。
+
+
+
+## 最後に
+
+言われてみれば、当たり前ですが、ふっと実感できてよかったです。
+
+最後まで読んでくださったかた、ありがとうございます。
+
+
+
+## 参考文献
+
+[https://docs.ruby-lang.org/ja/latest/class/Hash.html:embed:cite]
+
+

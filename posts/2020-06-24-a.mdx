@@ -1,0 +1,79 @@
+---
+title: レンダリングの処理の流れとレイアウト宣言
+date: "2020-06-24T18:01:33+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/06/24/180133
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613589339117
+---
+
+こんちには、たわらです。
+
+本記事では、railsのレンダリングの処理の流れをまとめました。
+
+
+
+ネームスペースを使用して、管理画面の画面表示を作成しているときに、こんがらがってしまったので、整理します。
+
+
+
+## ざっくりこんな処理の流れになってる
+
+１　URLにアクセスがある
+
+２　対応するコントローラーのアクションが作動する
+
+３　アクションはrederメソッドで、何がしかのテンプレートを表示しようとする。
+
+　　ただ、アクション名と同じerb または slimフィアルがあれば、記載しなくてもレンダリングしてくれます。
+
+　　`new.html.erb`があるとき、`def new; end`だけでもレンダリングしてくれる。すごい！
+
+4　【コントローラーは同じ基本名を持つレイアウトを`app/views/layouts`に探しにいく】
+
+ここの理解が欠如していましたね。。。
+
+> `PhotosController`クラスのアクションから出力するのであれば、`app/views/layouts/photos.html.erb`または`app/views/layouts/photos.builder`を探します。
+
+
+
+[https://railsguides.jp/layouts_and_rendering.html#%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E3%81%AE%E6%8E%A2%E7%B4%A2%E9%A0%86%E5%BA%8F:embed:cite]
+
+
+ 5　【なければ`application.html`を使用する】
+
+　rails newで作ったアプリだと、これを参照することになっているはずです。
+
+6　`application.html`のなかの`<%= yeild %>`に、アクションに対応したテンプレートを挿入する
+
+
+
+## コントローラーごとのページレイアウトを変えるにはlayout宣言を利用する
+
+たとえば、管理者用のページは既存のレイアウトとは変えたい場合があります。
+
+なので、コントローラー別でページレイアウトを変えるには、コントローラーが探しにいくレイアウトを予め指定してあげればよい、というわけですね。
+
+>`layout`宣言を使用することで、デフォルトのレイアウト名ルールを上書きすることができます。例:
+
+```ruby
+class ProductsController < ApplicationController
+  layout "inventory"
+  #...
+end
+```
+
+> この宣言によって、`ProductsController`からの出力で使用されるレイアウトは`app/views/layouts/inventory.html.erb`になります。
+
+
+[https://railsguides.jp/layouts_and_rendering.html#%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%A9%E7%94%A8%E3%81%AE%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E3%82%92%E6%8C%87%E5%AE%9A%E3%81%99%E3%82%8B:embed:cite]
+
+
+
+
+## 最後に
+
+基礎的な理解がスッキリすると見通しがたってよいですね。
+
+
+
+読んでくださったかた、ありがとうございます。
+

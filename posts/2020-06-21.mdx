@@ -1,0 +1,107 @@
+---
+title: パスワードリセット機能の処理の流れ
+date: "2020-06-21T15:18:34+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/06/21/151834
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613587945888
+---
+
+こんにちは、たわらです。
+
+本記事は、パスワードリセット機能を実装したときの学びをまとめたものです。
+
+
+## 認証管理Gem Sorceryのモジュールを使う
+
+sorceryを使用しているアプリケーションであれば、Reset Passwordというモジュールを使うことができます。
+
+
+
+[https://github.com/Sorcery/sorcery/wiki/Reset-password:embed:cite]
+
+
+
+このWikiに従って実装すれば、パスワードリセット機能を実装することができます。
+
+また、開発環境では実際にメールを配信してしまうと何かと面倒なので、実際には発信してないにもかかわらず、発信したメールの挙動を確認できる`letter_opener_web`を使うとスムーズに開発ができます。
+
+
+
+[https://github.com/fgrehm/letter_opener_web:embed:cite]
+
+
+
+
+
+# パスワードリセット機能の処理の流れ
+
+パスワードリセット機能の処理の流れを理解しましょう。
+
+
+1　【クライアント】パスワードリセットページにて、登録しているメールアドレスを打ち込む
+
+2　『　サーバー　』パスワードリセット申請時に、一意のトークンを発行してユーザーテーブルのトークンカラムに保存しておく。入力されたメールアドレスに、パスワードリセットページへのリンクを含めた案内メールを発信。このとき、URLに一意のトークンを含める。
+
+（`password_resets`コントロールのcreateアクションで、この処理を行う）
+
+こんな感じのURLになる。
+
+`http://hogehoge/password_resets/zKsb7u8hysvZdqyqqKfiy/edit`
+
+`zKsb7u8hysvZdqyqqKfiy`の部分がトークンですね。
+
+
+3　【クライアント】メールを開いて、URLをクリックする
+
+4　『　サーバー　』送られてきたURLからから取得したトークンで、ユーザーテーブルのトークンカラムを検索する。
+
+もし、取得したトークンと一致するトークンがDBになければ、ログイン画面に戻す
+
+もし、取得したトークンと一致するトークンがDBにあれば、パスワード更新画面を表示する
+
+５　【クライアント】パスワード更新画面で、パスワードを更新する
+
+６　『　サーバー　』フォームから送られてきた新しいパスワードを取得してDBに保存する。
+
+（この過程で、パスワードリセットトークンを削除する＝`nil`を代入するので、ユーザークラスで、トークンのカラムに`nil`が入ってもいいように、
+
+```ruby
+validates :reset_password_token, uniqueness: true, allow_nil: true
+```
+
+と記述する。しないと、エラーが出てしまう）
+
+
+
+ざっとこんな感じになりました。
+
+
+
+## Action Mailerの基礎に目を通す
+
+メーラークラスに必要なコードを記述すれば、メール内で使えるインスタンス変数や、メールの宛先、メールアドレスの題名などを決めることができます。
+
+```ruby
+class UserMailer < ApplicationMailer
+  default from: 'notifications@example.com'
+
+  def welcome_email
+    @user = params[:user]
+    @url  = 'http://example.com/login'
+    mail(to: @user.email, subject: '私の素敵なサイトへようこそ')
+  end
+end
+```
+
+こんな感じです。
+
+
+
+他にも、さまざまなオプションがあるので、メール機能を実装するときには、必ず参照しようと思います。
+
+
+[https://railsguides.jp/action_mailer_basics.html:embed:cite]
+
+
+## 最後に
+
+読んでくださったかた、ありがとうございます。

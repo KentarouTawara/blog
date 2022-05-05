@@ -1,0 +1,25 @@
+---
+title: git commit --allow-empty で空コミットを作成してPR作るといい感じ
+date: "2020-11-05T22:36:39+09:00"
+URL: https://kentarotawara.hatenablog.com/entry/2020/11/05/223639
+EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613649360929
+---
+
+こんにちは、たわらです。
+
+つよつよエンジニアに教えてもらった、プルリクの作り方のメモを残しておきます。
+
+- developブランチをpullして最新の状態にする
+- git flow feature start チケット名_簡単な名前　＊ git flow  を使用している場合
+- git commit --allow-empty で空コミットを作成する
+- git push する
+- ファイル差分のないPRの概要のところにチケットのURLと詳細説明と実装Todoチェックリストを作成する
+- いざ開発を進める　（できるだけ細かい粒度のcommitを心がける）
+
+実際これにのっとって開発を進めましたが、とても効率よく進めている感じがします。
+
+先に段取りを決めておけるのがいい感じです。
+
+こういう効率のよい開発のTips? は職場でないと学べないのかなと思います。教えてもらってとても感謝です。
+
+たわら
