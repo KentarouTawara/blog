@@ -1,6 +1,6 @@
 ---
 title: redis・sidekiq・memcashed・ssh・ソケット通信のメモ
-date: "2022-04-26"
+date: '2022-04-26'
 ---
 
 こんにちは、たわらです。
@@ -9,45 +9,49 @@ date: "2022-04-26"
 
 ### Redis
 
-オープンソースのDBのひとつです。複数のデータ型があって早い。非リレーショナルベース。
-特徴は3つある。
+オープンソースの DB のひとつです。複数のデータ型があって早い。非リレーショナルベース。
+特徴は 3 つある。
+
 1. コンピューターのメインメモリ上でデータを管理しているので、データに高速にアクセスできる。
 2. データを永続的に保持することができる。アプリケーションからキューを保存しとくと便利。
 3. マスター・スレーブ型レプリケーション機能。書き込みと読み取りにかかる負荷を分散できる。
 
 参考
-[Redisとはどのようなデータベース？3つの特徴や使い方についても解説 | テックマガジン from FEnetインフラ](https://www.fenet.jp/infla/column/%E6%9C%AA%E5%88%86%E9%A1%9E/redis%E3%81%A8%E3%81%AF%E3%81%A9%E3%81%AE%E3%82%88%E3%81%86%E3%81%AA%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%EF%BC%9F3%E3%81%A4%E3%81%AE%E7%89%B9%E5%BE%B4%E3%82%84%E4%BD%BF%E3%81%84/)
+[Redis とはどのようなデータベース？3 つの特徴や使い方についても解説 | テックマガジン from FEnet インフラ](https://www.fenet.jp/infla/column/%E6%9C%AA%E5%88%86%E9%A1%9E/redis%E3%81%A8%E3%81%AF%E3%81%A9%E3%81%AE%E3%82%88%E3%81%86%E3%81%AA%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%EF%BC%9F3%E3%81%A4%E3%81%AE%E7%89%B9%E5%BE%B4%E3%82%84%E4%BD%BF%E3%81%84/)
 
 ### Sidekiq
 
-RailsのJobの実行基盤としてのデファクト・スタンダード。Redisからキューを取り込んで実施する構成が人気。
-Railsとは異なるプロセスで、何らかのバックグランド処理を実行するソフトウェア。
+Rails の Job の実行基盤としてのデファクト・スタンダード。Redis からキューを取り込んで実施する構成が人気。
+Rails とは異なるプロセスで、何らかのバックグランド処理を実行するソフトウェア。
 
 参考
-[Sidekiqってどんなキック？ | 働くひとと組織の健康を創る iCARE](https://dev.icare.jpn.com/dev_cat/sidekiq/)
-[Sidekiqの要点まとめと動かし方 | つかびーの技術日記](http://tech-blog.tsukaby.com/archives/1519)
+[Sidekiq ってどんなキック？ | 働くひとと組織の健康を創る iCARE](https://dev.icare.jpn.com/dev_cat/sidekiq/)
+[Sidekiq の要点まとめと動かし方 | つかびーの技術日記](http://tech-blog.tsukaby.com/archives/1519)
 
 ### memcashed
-分散メモリキャッシュサーバーのソフトウェア。RDBMSだとアクセス集中や大量データを要求されたときにレスポンスが遅くなって、サイトの表示が遅くなってしまう。そこで、キャッシュサーバーを利用する。
 
-初回アクセス時は、RDBMSからデータを取得して、ブラウザに渡す。と同時に、memcashedに格納しておく。
-で、２回目のアクセスの際には、RDBMSではなく、memcashedに格納されてるデータを渡す！便利！
+分散メモリキャッシュサーバーのソフトウェア。RDBMS だとアクセス集中や大量データを要求されたときにレスポンスが遅くなって、サイトの表示が遅くなってしまう。そこで、キャッシュサーバーを利用する。
+
+初回アクセス時は、RDBMS からデータを取得して、ブラウザに渡す。と同時に、memcashed に格納しておく。
+で、２回目のアクセスの際には、RDBMS ではなく、memcashed に格納されてるデータを渡す！便利！
 
 参考
-[第1回　memcachedの基本：memcachedを知り尽くす｜gihyo.jp … 技術評論社](https://gihyo.jp/dev/feature/01/memcached/0001)
+[第 1 回　 memcached の基本：memcached を知り尽くす｜ gihyo.jp … 技術評論社](https://gihyo.jp/dev/feature/01/memcached/0001)
 
 ### ssh
-Secure Shellの略称。リモートコンピュータと通信するためのプロトコル。
+
+Secure Shell の略称。リモートコンピュータと通信するためのプロトコル。
 ネットワーク上の通信のすべてが暗号化されるので、安全。復習。
 
 参考
-[SSHとは | クラウド・データセンター用語集／IDCフロンティア](https://www.idcf.jp/words/ssh.html)
+[SSH とは | クラウド・データセンター用語集／IDC フロンティア](https://www.idcf.jp/words/ssh.html)
 
 ### ソケット通信
-サーバーとクライアントがずっとつながっているreal-timeコミュニケーションのこと。
+
+サーバーとクライアントがずっとつながっている real-time コミュニケーションのこと。
 動画配信とかでよく利用される。リアルタイムでデータのやり取りが必要な場合に求められる。
 
 参考
-[Http通信とSocket通信の違い | bny-blog](https://bny64.github.io/2020/12/13/http-socket-jp/)
+[Http 通信と Socket 通信の違い | bny-blog](https://bny64.github.io/2020/12/13/http-socket-jp/)
 
 (了)

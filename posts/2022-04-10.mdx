@@ -1,11 +1,11 @@
 ---
 title: Railsで最新のレコードをｘ件取得する方法
-date: "2022-04-10"
+date: '2022-04-10'
 ---
 
 こんにちは、たわらです。
 
-個人開発をしていて、Railsで最新のレコードをｘ件取得する方法ってどうやるんだっけ？
+個人開発をしていて、Rails で最新のレコードをｘ件取得する方法ってどうやるんだっけ？
 と一瞬迷ってしまったので、恥ずかしいけれどメモとして残します。
 
 ```ruby
@@ -20,10 +20,10 @@ irb(main):019:0> @latest_works = Work.order(created_at: :desc).limit(5).pluck(:i
 => [11, 10, 9, 8, 7]
 ```
 
-`created_at`で作成順に並び替えて、後ろから5件取得すればいいですね。
+`created_at`で作成順に並び替えて、後ろから 5 件取得すればいいですね。
 
-ちなみに`last`を使っても最新の5件を取得できますが、idが昇順になってしまいます。
-lastで呼び出すと配列で返ってくるので、さらにメソッドチェーンを組む必要がありそうです。
+ちなみに`last`を使っても最新の 5 件を取得できますが、id が昇順になってしまいます。
+last で呼び出すと配列で返ってくるので、さらにメソッドチェーンを組む必要がありそうです。
 どうやってやるんだろう、、、
 
 ```ruby
@@ -41,6 +41,5 @@ irb(main):020:0> @latest_works = Work.last(5).pluck(:id)
 別のもっとよい書き方がありそうな予感、、、
 
 参考文献
-- [Active Record クエリインターフェイス - Railsガイド](
-https://railsguides.jp/active_record_querying.html#limit%E3%81%A8offset)
 
+- [Active Record クエリインターフェイス - Rails ガイド](https://railsguides.jp/active_record_querying.html#limit%E3%81%A8offset)

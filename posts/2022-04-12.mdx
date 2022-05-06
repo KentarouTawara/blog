@@ -1,15 +1,15 @@
 ---
 title: tagを使ってフラッシュメッセージを実装する
-date: "2022-04-12"
+date: '2022-04-12'
 ---
 
 こんちには、たわらです。
 
 久しぶりに個人開発をしていて、フラッシュメッセージを実装したのでそのメモです。
 
-こんな感じで`tag`メソッドを利用します。htmlをいい感じに生成してくれます。
+こんな感じで`tag`メソッドを利用します。html をいい感じに生成してくれます。
 
-### tagヘルパーの使い方
+### tag ヘルパーの使い方
 
 例を見ればだいたい理解できます。[rails](https://github.com/rails/rails/blob/984c3ef2775781d47efa9f541ce570daa2434a80/actionview/lib/action_view/helpers/tag_helper.rb#L299)から拝借。
 
@@ -42,7 +42,7 @@ date: "2022-04-12"
 ### フラッシュメッセージを実装する
 
 `tag`ヘルパーを利用して、フラッシュメッセージを実装するとこんな感じです。
-cssにはTailwindCSSのコンポーネントライブラリである[daisyUI](https://daisyui.com/)を使ってます。適宜無視してください。
+css には TailwindCSS のコンポーネントライブラリである[daisyUI](https://daisyui.com/)を使ってます。適宜無視してください。
 
 ```ruby:app/views/shared/_flash_message.html.slim
 - flash.each do |message_type, message|
@@ -50,7 +50,7 @@ cssにはTailwindCSSのコンポーネントライブラリである[daisyUI](ht
     = tag.p(message)
 ```
 
-そして上記のパーシャルをviewに読み込ませます。
+そして上記のパーシャルを view に読み込ませます。
 
 ```ruby:application.html.slim
   body
@@ -72,6 +72,7 @@ cssにはTailwindCSSのコンポーネントライブラリである[daisyUI](ht
 ```
 
 参考文献
-- [Rails: 5.1以降のtagヘルパー記法はcontent_tagより便利｜TechRacho by BPS株式会社](https://techracho.bpsinc.jp/hachi8833/2022_01_13/48191)
+
+- [Rails: 5.1 以降の tag ヘルパー記法は content_tag より便利｜ TechRacho by BPS 株式会社](https://techracho.bpsinc.jp/hachi8833/2022_01_13/48191)
 
 - [rails/tag_helper.rb at 984c3ef2775781d47efa9f541ce570daa2434a80 · rails/rails](https://github.com/rails/rails/blob/984c3ef2775781d47efa9f541ce570daa2434a80/actionview/lib/action_view/helpers/tag_helper.rb#L299)

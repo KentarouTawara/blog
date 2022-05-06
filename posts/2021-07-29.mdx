@@ -1,6 +1,6 @@
 ---
 title: 大量のレコードを取得してループ処理する場合は、eachではなくfind_eachメソッドを使う
-date: "2021-07-29T00:45:51+09:00"
+date: '2021-07-29T00:45:51+09:00'
 URL: https://kentarotawara.hatenablog.com/entry/2021/07/29/004551
 EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613791587376
 ---
@@ -8,9 +8,9 @@ EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/at
 こんにちは、たわらです。
 
 さて、大量のレコードを取り出して、ループで処理するときってありますよね。
-たとえば新機能をリリースするために、ある既存のテーブルのいくつかのフラグがtrueであれば、新しく追加したカラムにtrueを入れるときとか。
+たとえば新機能をリリースするために、ある既存のテーブルのいくつかのフラグが true であれば、新しく追加したカラムに true を入れるときとか。
 
-そんなときeachを使ってこんなふうに書く方法はすぐに思いつきます。
+そんなとき each を使ってこんなふうに書く方法はすぐに思いつきます。
 
 ```ruby
 ManyHoge.each do |mh|
@@ -18,9 +18,9 @@ ManyHoge.each do |mh|
 end
 ```
 
-ただ既存レコードが大量にある場合があります。8万件とか。その場合、eachだとすべてのレコードを一気に取得して、メモリに保存してしまいます。メモリが足りないとフリーズしてしまいます。
+ただ既存レコードが大量にある場合があります。8 万件とか。その場合、each だとすべてのレコードを一気に取得して、メモリに保存してしまいます。メモリが足りないとフリーズしてしまいます。
 
-そこで、一気にレコードを取得するのではなく分割して取得・処理する方法を利用します。find_eachメソッドです。
+そこで、一気にレコードを取得するのではなく分割して取得・処理する方法を利用します。find_each メソッドです。
 
 ```ruby
 ManyHoge.find_each do |mh|
@@ -28,13 +28,11 @@ ManyHoge.find_each do |mh|
 end
 ```
 
-デフォルトで1,000件ずつ分割して取得します。便利ですね！
+デフォルトで 1,000 件ずつ分割して取得します。便利ですね！
 
 参考
 
-
 [http://cloudcafe.tech/?p=2446:title]
-
 
 [https://railsdoc.com/page/find_each:title]
 

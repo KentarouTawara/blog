@@ -1,6 +1,6 @@
 ---
 title: Userにbelong to で紐づくデータをseed_fuで作るときにeach_with_indexが活躍した
-date: "2021-06-28T00:58:40+09:00"
+date: '2021-06-28T00:58:40+09:00'
 URL: https://kentarotawara.hatenablog.com/entry/2021/06/28/005840
 EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613780155327
 ---
@@ -11,7 +11,7 @@ EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/at
 
 ### 背景
 
-User に belong to で紐づくseed データを作成する必要がありました。
+User に belong to で紐づく seed データを作成する必要がありました。
 たとえばこんな感じ。業務コードをだいぶぼかしているので変な感じするかもですが目をつむってください。
 
 ```ruby
@@ -22,11 +22,11 @@ UserNickname.seed do |s|
 end
 ```
 
-で、50人いるuserのseedデータすべてにnicknameをーー同じでもーー付与しなければならない。
+で、50 人いる user の seed データすべてに nickname をーー同じでもーー付与しなければならない。
 
 ### 愚かな対処
 
-ボクはなにも考えずに50人分全員ベタ打ちで対処した。長い時間をかけて、こんなのエンジニアらしくないと頭では思いながら、、、
+ボクはなにも考えずに 50 人分全員ベタ打ちで対処した。長い時間をかけて、こんなのエンジニアらしくないと頭では思いながら、、、
 
 ```ruby
 UserNickname.seed do |s|
@@ -54,11 +54,12 @@ end
 ```
 
 ### 先輩のご指摘
-PRレビューをすると「User.allをeachで回して作成する方が良さそう」とコメントされる。
+
+PR レビューをすると「User.all を each で回して作成する方が良さそう」とコメントされる。
 
 なんと、その手があったか！
 
-で、こんなふうに書いた。300行くらいあったコードがわずか10行程度になりました。すごい。
+で、こんなふうに書いた。300 行くらいあったコードがわずか 10 行程度になりました。すごい。
 
 ```ruby
 seed_id = 1
@@ -72,9 +73,9 @@ User.all.each do |user|
 end
 ```
 
-### each_with_indexの登場
+### each_with_index の登場
 
-「Rubyっぽくないコードになっちゃってるね。each_with_indexを使うといいよ」と先輩がPRに再度コメントした。細かいところまで見てもらえてうれしい。seed_id += 1 のところらへんがRubyならもっとうまく書けるとのこと。
+「Ruby っぽくないコードになっちゃってるね。each_with_index を使うといいよ」と先輩が PR に再度コメントした。細かいところまで見てもらえてうれしい。seed_id += 1 のところらへんが Ruby ならもっとうまく書けるとのこと。
 
 なるほど、each_with_index （!） どこかで読んだことあるメソッドだった。先輩に聞きながら実装すると、こんなふうになった。
 
@@ -87,8 +88,9 @@ User.all.each_with_index do |user, i|
   end
 end
 ```
+
 要素とそのインデックスをブロックに渡して、インデックスをブロック内で使えるのですね。
-ちなみにインデックスは0からはじまるので、idなど1から開始したい場合は`i + 1`とします。
+ちなみにインデックスは 0 からはじまるので、id など 1 から開始したい場合は`i + 1`とします。
 
 ### ひとこと
 
@@ -96,5 +98,3 @@ end
 
 参考文献
 [https://docs.ruby-lang.org/ja/latest/method/Enumerable/i/each_with_index.html:embed:cite]
-
-

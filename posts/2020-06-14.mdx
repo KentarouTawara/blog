@@ -1,28 +1,21 @@
 ---
 title: 入力と出力を意識しよう
-date: "2020-06-14T14:23:41+09:00"
+date: '2020-06-14T14:23:41+09:00'
 URL: https://kentarotawara.hatenablog.com/entry/2020/06/14/142341
 EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613584919030
 ---
 
- こんちには、たわらです。
+こんちには、たわらです。
 
 本記事は、メソッドをつくるのに入力値と出力値を意識するようになった、という記事です。
-
-
 
 ## ことの発端のエラー
 
 通っているスクールの講師のかたが書いたこちらの記事に、初学者にありがちなパターンのひとつに「入力と出力」を意識するように、という箇所があります。
 
-
-
 [https://qiita.com/DaichiSaito/items/52448ebfcb0db768dcf3:embed:cite]
 
-
 一度読んだときに、なるほどなーと思ったのですが、その必要性を実感することがありました。
-
-
 
 掲示板アプリを作っていて、ブックマークした掲示板のブックマークをはずす、という機能を実装しようとしているときに、こんなエラーに出会ったからです。
 
@@ -42,15 +35,11 @@ end
 
 要するに、エラーが言っているのは、`current_user.unbookmark(board)`の`board`に`Board`クラスのオブジェクトが期待されてるのに、`Bookmark`クラスのオブジェクトになってしまっていますよ、とのことです。
 
-
-
 つまり、ブックマークをはずす`board`をきちんと特定できていないということです。
 
 `board = current_user.bookmarks.find(params[:id]).board`
 
 とすればよかったのです。
-
-
 
 ## 戻り値を気にする
 
@@ -58,19 +47,17 @@ end
 
 で、この`.board`とは何か？　これがわかりませんでした。
 
-調べてみると、Bookmarksテーブルはbelong_toの引数にboardを入れているので、`association `メソッド（assosicationaはプレースホルダー）として使えるのですね。
+調べてみると、Bookmarks テーブルは belong_to の引数に board を入れているので、`association `メソッド（assosicationa はプレースホルダー）として使えるのですね。
 
 ここで、**なるほどー**、と思うことがありました。
 
-`.board`はBookmarksクラスのインスタンスに対して使えるメソッドなんだ！　という至極当たり前のことです。
+`.board`は Bookmarks クラスのインスタンスに対して使えるメソッドなんだ！　という至極当たり前のことです。
 
-ということはつまり、`bookmarks.find(params[:id])`はBookmarksクラスのインスタンスを返しているということ！　だと至極当たり前のことに気づき、
+ということはつまり、`bookmarks.find(params[:id])`は Bookmarks クラスのインスタンスを返しているということ！　だと至極当たり前のことに気づき、
 
-そしてそういえば確かに、`bookmarks`はUserクラスとhas_manyで関連付けているから、Userクラスのインスタンスに使用できるメソッドであることに気づき、
+そしてそういえば確かに、`bookmarks`は User クラスと has_many で関連付けているから、User クラスのインスタンスに使用できるメソッドであることに気づき、
 
-ということはつまり、`current_user`はUserクラスのインスタンスを返しているということだ！　という当たり前のことに気づいたのです。
-
-
+ということはつまり、`current_user`は User クラスのインスタンスを返しているということだ！　という当たり前のことに気づいたのです。
 
 ## 戻り値
 
@@ -80,18 +67,12 @@ end
 
 しかし、今回はのエラーの対策を通して、入力値と出力値を意識する重要性が身に沁みてわかりました。適当にメソッドをつないでれば、エラーは出てしまいますよね。気をつけます。
 
-
-
 ## 最後に
 
 読んでくださったかた、ありがとうございます。
-
-
 
 ## 参考文献
 
 [https://railsguides.jp/association_basics.html#belongs-to%E3%81%A7%E8%BF%BD%E5%8A%A0%E3%81%95%E3%82%8C%E3%82%8B%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89:embed:cite]
 
 [https://qiita.com/DaichiSaito/items/52448ebfcb0db768dcf3:embed:cite]
-
-

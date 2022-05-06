@@ -1,6 +1,6 @@
 ---
 title: find_or_create_byメソッドはブロックを取れる
-date: "2022-01-03"
+date: '2022-01-03'
 ---
 
 こんにちは、たわらです。
@@ -13,6 +13,6 @@ User.find_or_create_by!(email: "hoge@example.com") do |user|
 end
 ```
 
-emailで検索してレコードが存在すれば、そのオブジェクトを返却する。もし存在しなければ、引数のemailとブロック内のnameを使ってレコードを新規作成する。
+email で検索してレコードが存在すれば、そのオブジェクトを返却する。もし存在しなければ、引数の email とブロック内の name を使ってレコードを新規作成する。
 
-[find_or_create_by | Railsドキュメント](https://railsdoc.com/page/find_or_create_by)
+[find_or_create_by | Rails ドキュメント](https://railsdoc.com/page/find_or_create_by)

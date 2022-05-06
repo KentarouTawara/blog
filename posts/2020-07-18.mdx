@@ -1,18 +1,17 @@
 ---
 title: hoge ll= foo はhogeがnilまたはfalseなら、fooをhogeに代入する
-date: "2020-07-18T12:40:28+09:00"
+date: '2020-07-18T12:40:28+09:00'
 URL: https://kentarotawara.hatenablog.com/entry/2020/07/18/124028
 EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613600185878
 ---
-
 
 こんにちは、たわらです。
 
 本記事は演算子`||=`について整理した記事です。
 
-## 事例　nilだったら空文字入れたい
+## 事例　 nil だったら空文字入れたい
 
-ある変数がnilだった場合に、空文字を代入したいことがありました。ない知恵を絞ってこんなコードを書きました。
+ある変数が nil だった場合に、空文字を代入したいことがありました。ない知恵を絞ってこんなコードを書きました。
 
 ```ruby
 if sentence.body.nil?
@@ -23,8 +22,6 @@ end
 ```
 
 なんだか冗長な感じを受けます。
-
-
 
 ## 自己代入を使おう
 
@@ -42,9 +39,9 @@ sentence.body = sentence.body || ''
 
 右辺に注目します。`ll`演算子は式全体の真偽値が確定した時点で式の評価を終わらせ、そのときの戻り値を返します。
 
-つまり、sentence.bodyがfalseでもnilでもない真の値であれば、`sentence.body = sentence.body`となります。一方で、sentence.bodyがfalseかnilの場合、`sentence.body =  ''`となります。
+つまり、sentence.body が false でも nil でもない真の値であれば、`sentence.body = sentence.body`となります。一方で、sentence.body が false か nil の場合、`sentence.body = ''`となります。
 
-Rubyのレファレンスには、
+Ruby のレファレンスには、
 
 ```ruby
 a ||= 1         # a が偽か未定義ならば1を代入。初期化時のイディオムの一種。
@@ -54,7 +51,7 @@ a ||= 1         # a が偽か未定義ならば1を代入。初期化時のイ�
 
 また、チュリー本には、
 
-> X ||=A というコードを見たら「変数Xがnilまたはfalseなら、AをXに代入」と頭の中で読み替えるようにしてください
+> X ||=A というコードを見たら「変数 X が nil または false なら、A を X に代入」と頭の中で読み替えるようにしてください
 
 とまで書いてあります（pp174）。
 
@@ -62,11 +59,6 @@ a ||= 1         # a が偽か未定義ならば1を代入。初期化時のイ�
 
 ## 参考文献
 
-
 [https://docs.ruby-lang.org/ja/latest/doc/spec=2foperator.html#selfassign:embed:cite]
 
-
-
 [https://amzn.to/3hargHX:embed:cite]
-
-

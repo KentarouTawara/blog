@@ -1,6 +1,6 @@
 ---
 title: countメソッドにブロック渡そう
-date: "2021-11-03T15:07:35+09:00"
+date: '2021-11-03T15:07:35+09:00'
 URL: https://kentarotawara.hatenablog.com/entry/2021/11/03/150735
 EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/13574176438029135813
 ---
@@ -11,7 +11,7 @@ EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/at
 
 変数を用意して、条件を満たせば、インクリメントする、というやり方はパッと思いつきます。
 
-しかしそうではない方法もあります。今回はcountメソッドにブロックを渡せば、より短いコードで書けるよね、という記事です。
+しかしそうではない方法もあります。今回は count メソッドにブロックを渡せば、より短いコードで書けるよね、という記事です。
 
 ### 問題
 
@@ -26,8 +26,8 @@ N の約数の個数を数えるプログラムを作成してください。
 
 6
 
-が問題であれば、その約数は1,2,3,6 の4つです。
-つまり答えは4です。
+が問題であれば、その約数は 1,2,3,6 の 4 つです。
+つまり答えは 4 です。
 
 ### 私のあまりイケてない回答
 
@@ -42,7 +42,8 @@ count = 0
 end
 puts count
 ```
-初期値0を変数に持たせ、条件を満たせば（6を割り切れれば）、変数をインクリメントする方法ですね。
+
+初期値 0 を変数に持たせ、条件を満たせば（6 を割り切れれば）、変数をインクリメントする方法ですね。
 
 長い、、、
 
@@ -50,7 +51,7 @@ puts count
 
 ### いい感じの回答
 
-2行！
+2 行！
 
 ```ruby
 n = gets.to_i
@@ -58,7 +59,6 @@ puts (1..n).filter{ |i| n % i == 0 }.count
 ```
 
 `(1..n).filter{ |i| n % i == 0 }`の返り値が`[1, 2, 3, 6]`となります。約数ですね。この配列の要素数を答えにしています。
-
 
 ```ruby
 n=gets.to_i
@@ -72,6 +72,3 @@ p (1..n).count{|i| n % i ==0 }
 参考文献
 
 https://docs.ruby-lang.org/ja/latest/method/Enumerable/i/count.html
-
-
-

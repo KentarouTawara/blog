@@ -1,29 +1,23 @@
 ---
 title: ポリモーフィック関連を使うと、複数のモデルに属していることを1つの関連付けで表現できる
-date: "2020-07-30T21:16:06+09:00"
+date: '2020-07-30T21:16:06+09:00'
 URL: https://kentarotawara.hatenablog.com/entry/2020/07/30/211606
 EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/atom/entry/26006613607199086
 ---
 
-
-
 こんにちは、たわらです。
-
-
 
 ポリモーフィック関連について整理した記事です。
 
-
-
 ## モデルのコードはこんな感じ
 
-ブログ記事を作成するサービスを考えます。記事をブロックを追加するかたちで作成します。記事は、Ariticleブロックを複数持っているということです。そして、記事ブロックには3種類あります。文章と画像です。
+ブログ記事を作成するサービスを考えます。記事をブロックを追加するかたちで作成します。記事は、Ariticle ブロックを複数持っているということです。そして、記事ブロックには 3 種類あります。文章と画像です。
 
-SentenceモデルとMediumモデルがあり、それらにAriticleblockモデルがポリモーフィック関連しているとします。
+Sentence モデルと Medium モデルがあり、それらに Ariticleblock モデルがポリモーフィック関連しているとします。
 
 それぞれこんなふうになります。
 
-Ariticleblockモデル
+Ariticleblock モデル
 
 ```ruby
 class ArticleBlock < ApplicationRecord
@@ -33,7 +27,7 @@ class ArticleBlock < ApplicationRecord
 end
 ```
 
-Sentenceモデル
+Sentence モデル
 
 ```ruby
 class Sentence < ApplicationRecord
@@ -42,7 +36,7 @@ class Sentence < ApplicationRecord
 end
 ```
 
-Mediumモデル
+Medium モデル
 
 ```ruby
 class Medium < ApplicationRecord
@@ -51,17 +45,13 @@ class Medium < ApplicationRecord
 end
 ```
 
+Articleblock モデルに`polymorphic: true`とあります。これでポリモーフィック関連ができます。blockable という存在しないテーブル名に属している、と読めます。
 
-
-Articleblockモデルに`polymorphic: true`とあります。これでポリモーフィック関連ができます。blockableという存在しないテーブル名に属している、と読めます。
-
-
-
-SentenceモデルとMediumモデルには`as: :blockable`とあります。Articleblockモデルにblockableとして関連する、と読めます。
+Sentence モデルと Medium モデルには`as: :blockable`とあります。Articleblock モデルに blockable として関連する、と読めます。
 
 ## カラムの作成はこんな感じ
 
-Ariticleブロックのカラムにはポリモーフィック関連のための準備が必要です。
+Ariticle ブロックのカラムにはポリモーフィック関連のための準備が必要です。
 
 ```ruby
 class CreateArticleBlocks < ActiveRecord::Migration[5.2]
@@ -77,15 +67,11 @@ class CreateArticleBlocks < ActiveRecord::Migration[5.2]
 end
 ```
 
-〇〇ableを作成する必要があるようです。
+〇〇 able を作成する必要があるようです。
 
-こうすると自動的にAriticleblockテーブルに、blockable_idとblockable_typeが追加されます。
+こうすると自動的に Ariticleblock テーブルに、blockable_id と blockable_type が追加されます。
 
-
-
-この状態で、Sentence.newをすると自動的に、blockable_idに適当な数値が入り、blockable_typeに"Sentence"と入ります。
-
-
+この状態で、Sentence.new をすると自動的に、blockable_id に適当な数値が入り、blockable_type に"Sentence"と入ります。
 
 ## コンソールでの出力はこんな感じ
 
@@ -105,18 +91,10 @@ end
 => #<Sentence:0x00007ffa2eaa9fd0 id: 1, body: "<p>およよよよ</p>", created_at: Wed, 15 Jul 2020 16:43:32 JST +09:00, updated_at: Wed, 15 Jul 2020 16:43:46 JST +09:00>
 ```
 
-
-
 ## 参考文献リスト
 
 [https://railsguides.jp/association_basics.html#%E3%83%9D%E3%83%AA%E3%83%A2%E3%83%BC%E3%83%95%E3%82%A3%E3%83%83%E3%82%AF%E9%96%A2%E9%80%A3%E4%BB%98%E3%81%91:embed:cite]
 
-
-
 [https://qiita.com/itkrt2y/items/32ad1512fce1bf90c20b:title]
 
-
 [https://qiita.com/kasei-san/items/a9795de8a6558fbcff14:title]
-
-
-
