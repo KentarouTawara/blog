@@ -3,14 +3,14 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { MetaProps } from '../types/layout';
 
-export const WEBSITE_HOST_URL = 'https://www.kentaroutawara.dev';
+export const WEBSITE_HOST_URL = 'https://blog-taupe-mu-63.vercel.app';
 
 const Head = ({ customMeta }: { customMeta?: MetaProps }): JSX.Element => {
   const router = useRouter();
   const meta: MetaProps = {
     title: 'kentaroutawara.dev',
     description: '個人開発や業務で学んだことをアウトプットしてます',
-    image: `${WEBSITE_HOST_URL}/images/brideg.png`,
+    image: `${WEBSITE_HOST_URL}/images/preview.png`,
     type: 'website',
     ...customMeta,
   };
