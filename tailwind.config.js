@@ -48,13 +48,13 @@ module.exports = {
             ol: {
               li: {
                 '&:before': { color: theme('colors.gray.500') },
-                 wordBreak: 'break-all',
+                wordBreak: 'break-all',
               },
             },
             ul: {
               li: {
                 '&:before': { backgroundColor: theme('colors.gray.500') },
-                 wordBreak: 'break-all',
+                wordBreak: 'break-all',
               },
             },
             strong: { color: theme('colors.gray.300') },
@@ -67,7 +67,7 @@ module.exports = {
               },
             },
             div: {
-              wordBreak: 'break-all'
+              wordBreak: 'break-all',
             },
           },
         },
