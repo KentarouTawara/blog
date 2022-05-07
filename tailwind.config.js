@@ -34,6 +34,7 @@ module.exports = {
                 color: theme('colors.blue.600'),
               },
               code: { color: theme('colors.blue.400') },
+              wordBreak: 'break-all',
             },
             blockquote: {
               borderLeftColor: theme('colors.gray.700'),
@@ -47,11 +48,13 @@ module.exports = {
             ol: {
               li: {
                 '&:before': { color: theme('colors.gray.500') },
+                 wordBreak: 'break-all',
               },
             },
             ul: {
               li: {
                 '&:before': { backgroundColor: theme('colors.gray.500') },
+                 wordBreak: 'break-all',
               },
             },
             strong: { color: theme('colors.gray.300') },
@@ -62,6 +65,9 @@ module.exports = {
               tr: {
                 borderBottomColor: theme('colors.gray.700'),
               },
+            },
+            div: {
+              wordBreak: 'break-all'
             },
           },
         },

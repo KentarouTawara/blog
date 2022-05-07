@@ -9,8 +9,8 @@ const Head = ({ customMeta }: { customMeta?: MetaProps }): JSX.Element => {
   const router = useRouter();
   const meta: MetaProps = {
     title: 'tawara-tech-blog',
-    description: 'tawaraの技術ブログ',
-    image: `${WEBSITE_HOST_URL}/images/site-preview.png`,
+    description: '個人開発や業務で学んだことをアウトプットしてます',
+    image: `${WEBSITE_HOST_URL}/images/preview.png`,
     type: 'website',
     ...customMeta,
   };

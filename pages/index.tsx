@@ -16,11 +16,11 @@ export const Index = ({ posts }: IndexProps): JSX.Element => {
       <h1>Home</h1>
 
       {posts.map((post) => (
-        <article key={post.slug} className="mt-12">
+        <article key={post.slug} className="mt-8">
           <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
             {format(parseISO(post.date), 'yyyy/MM/dd')}
           </p>
-          <h1 className="mb-2 text-xl">
+          <h1 className="mb-2 text-lg">
             <Link as={`/posts/${post.slug}`} href={`/posts/[slug]`}>
               <a className="text-gray-900 dark:text-white dark:hover:text-blue-400">
                 {post.title}
