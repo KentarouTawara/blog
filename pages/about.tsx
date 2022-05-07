@@ -43,8 +43,8 @@ export const About = (): JSX.Element => {
             </li>
             <li>
               Website:{' '}
-              <Link href="https://www.kentaroutawara.com">
-                <a>https://www.kentaroutawara.com</a>
+              <Link href="https://www.kentaroutawara.dev">
+                <a>https://www.kentaroutawara.dev</a>
               </Link>
             </li>
           </ul>
