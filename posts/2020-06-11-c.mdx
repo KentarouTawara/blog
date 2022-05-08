@@ -37,7 +37,7 @@ resources メソッドを使うと、７つの名前付きルートが自動生�
 
 この`comment.board`の中身はこのようになってます。
 
-```
+```ruby
  id: 62,
  title: "aaa",
  body: "aaa",
@@ -49,7 +49,7 @@ resources メソッドを使うと、７つの名前付きルートが自動生�
 
 で、実際に生成されたパスは、
 
-```
+```ruby
 [4] pry(#<CommentsController>)> board_path(comment.board)
 => "/boards/62"
 ```
@@ -58,7 +58,7 @@ resources メソッドを使うと、７つの名前付きルートが自動生�
 
 ルーティングを確認すると、、、
 
-```
+```ruby
  board GET    /boards/:id  boards#show
 ```
 

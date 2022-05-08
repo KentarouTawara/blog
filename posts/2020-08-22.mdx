@@ -9,17 +9,17 @@ EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/at
 
 先日からポートフォリオの制作に着手しました。Rails new をしてとりあえずフロントまわりに必要なものを導入した際の手順をまとめる記事です。
 
-# 先人の知恵を借りたけどできなかった
+### 先人の知恵を借りたけどできなかった
 
-[https://qiita.com/sasakura_870/items/38e17d95d9497cf81413:title]
+[https://qiita.com/sasakura_870/items/38e17d95d9497cf81413](https://qiita.com/sasakura_870/items/38e17d95d9497cf81413)
 
-[https://mebee.info/2020/08/06/post-15232/:title]
+[https://mebee.info/2020/08/06/post-15232/](https://mebee.info/2020/08/06/post-15232/)
 
-[https://url4u.jp/rails6-material-design-for-bootstrap/:title]
+[https://url4u.jp/rails6-material-design-for-bootstrap/](https://url4u.jp/rails6-material-design-for-bootstrap/)
 
 このあたりのブログを参考に導入をしてみた。
 
-```
+```bash
 $ yarn add bootstrap bootstrap-material-design jquery popper.js
 ```
 
@@ -53,13 +53,13 @@ $ touch app/javascript/stylesheets/application.scss
 = javascript_pack_tag 'application'
 ```
 
-# Material design for bootstrap 4 が利用できない
+### Material design for bootstrap 4 が利用できない
 
 ここまでの手順ではどうしてか Material design for bootstrap 4 が反映されていませんでした。ただの bootstrap です。特にエラーもありません。
 
 なんでかなーと思って公式を確認すると、どうやら Material design for bootstrap 4 のバージョンが違うようでした。
 
-```
+```bash
 $ yarn add bootstrap bootstrap-material-design jquery popper.js
 ```
 
@@ -67,19 +67,19 @@ $ yarn add bootstrap bootstrap-material-design jquery popper.js
 
 しかし公式を見てみると、
 
-```
+```bash
 npm install bootstrap-material-design@4.1.1
 ```
 
 と書いてあります！
 
-[https://fezvrasta.github.io/bootstrap-material-design/docs/4.0/getting-started/download/:title]
+https://fezvrasta.github.io/bootstrap-material-design/docs/4.0/getting-started/download/
 
 なので、公式にならってインストールします。これで`package.json`にてバージョンが`4.1.1`に変更されます。
 
 すると、下記のエラーがはじめて出てきました。とにかく進んでるっぽいですね。
 
-```
+```bash
 ERROR in ./app/javascript/stylesheets/application.scss (./node_modules/css-loader/dist/cjs.js??ref--7-1!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./app/javascript/stylesheets/application.scss)
 Module build failed (from ./node_modules/sass-loader/dist/cjs.js):    @include form-validation-state("valid", $label-color);
             ^
@@ -101,7 +101,7 @@ Mixin form-validation-state is missing argument $icon.
 
 で試しにググってみると、別の repo の issue に出会う。そのものズバリの内容でした。いいねがたくさんついてる解決法を実施するとうまくいきました！
 
-[https://github.com/creativetimofficial/material-kit/issues/154:embed:cite]
+https://github.com/creativetimofficial/material-kit/issues/154
 
 `node_modules/bootstrap-material-design/scss/mixins/_forms.scss`の 159 行目を
 
@@ -119,16 +119,16 @@ Mixin form-validation-state is missing argument $icon.
 
 この変更による影響範囲は正直把握しきれませんが、これで Material design for bootstrap 4 は反映されます。
 
-# 反省
+### 反省
 
 何はともあれ公式を読んでみることは大事です
 
-## 参考文献
+### 参考文献
 
-[https://qiita.com/sasakura_870/items/38e17d95d9497cf81413:title]
+[https://qiita.com/sasakura_870/items/38e17d95d9497cf81413](https://qiita.com/sasakura_870/items/38e17d95d9497cf81413)
 
-[https://mebee.info/2020/08/06/post-15232/:title]
+[https://mebee.info/2020/08/06/post-15232/](https://mebee.info/2020/08/06/post-15232/)
 
-[https://url4u.jp/rails6-material-design-for-bootstrap/:title]
+[https://url4u.jp/rails6-material-design-for-bootstrap/](https://url4u.jp/rails6-material-design-for-bootstrap/)
 
-[https://fezvrasta.github.io/bootstrap-material-design/docs/4.0/getting-started/download/:title]
+[https://fezvrasta.github.io/bootstrap-material-design/docs/4.0/getting-started/download/](https://fezvrasta.github.io/bootstrap-material-design/docs/4.0/getting-started/download/)

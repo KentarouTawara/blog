@@ -39,7 +39,7 @@ has_many :through 関連付けは、Rails ガイドによると、次のよう�
 
 このあたりは、Rails チュートリアルのユーザーフォローのところの解説に通じます。
 
-[https://railstutorial.jp/chapters/following-users?version=3.2#sec-a_problem_with_the_data_model:embed:cite]
+https://railstutorial.jp/chapters/following-users?version=3.2#sec-a_problem_with_the_data_model
 
 ## ブクマするというイベント系エンティティ
 
@@ -53,7 +53,7 @@ Rails はこのテーブルを経由して、Board テーブルにアクセス�
 
 この発想は新鮮でした。モノだけでなくて、イベントも管理するのか、管理できるのか、管理しなくちゃならないのか！　と思いました。
 
-[https://amzn.to/3dW9Wp4:embed:cite]
+https://amzn.to/3dW9Wp4
 
 で、ユーザーがひとつの掲示板を何度もブクマできることは必要ないので、use_id と board_id のペアが一意になるようにします。
 
@@ -86,7 +86,6 @@ has_many :boards, through: :bookmarks
 
 ```ruby
 has_many :bookmark_boards, through: :bookmarks
-
 ```
 
 ではいけないのでしょうか？

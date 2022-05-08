@@ -69,6 +69,9 @@ module.exports = {
             div: {
               wordBreak: 'break-all',
             },
+            code: {
+              wordBreak: 'break-all',
+            },
           },
         },
       }),

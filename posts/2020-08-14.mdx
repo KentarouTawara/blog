@@ -9,21 +9,19 @@ EditURL: https://blog.hatena.ne.jp/KentaroTawara/kentarotawara.hatenablog.com/at
 
 本記事は JQuery をざっくり理解するために必要な知識をまとめた記事です。
 
-## 「要素を指定する」→「それに何かをする」
+### 「要素を指定する」→「それに何かをする」
 
 JQuery の基本的な考え方は、「何かを取ってくる」→「それに何かする」です。下記の参考書がわかりやすかったです。
 
-[asin:B00TDDLNUQ:detail]
-
 この考え方を理解できればコードを見ても何がしたいのかがわかります。
 
-```
+```javascript
 $('#sample1').hide();
 ```
 
 このコードは、「id 属性が sample1 である要素を隠す」ということです。
 
-```
+```html
 <div id = "sample1">なんらかのテキスト</div>
 ```
 
@@ -73,7 +71,7 @@ HTML から`#js-bookmark-button-for-board-<%= @board.id %>`という id を持�
 
 要素を指定したらいろんなメソッドが使えます。
 
-```
+```javascript
 $('セレクタ').メソッド(引数);
 ```
 
@@ -89,15 +87,15 @@ $('セレクタ').メソッド(引数);
 
 などなど詳しくはこちらを参照
 
-[http://semooh.jp/jquery/:embed:cite]
+http://semooh.jp/jquery
 
-## $(function(){...})
+### $(function(){...})
 
 ページ上にある要素を操作したいときには、すべての要素がページに読み込まれている必要があります。そうしないと、まだ読み込まれていない要素に対して操作しようとしてうまくいきません。
 
 `$(function(){...})`と書くと、「ページ読み込み完了時に実行されるコードを予約する」ことができます。
 
-```
+```javascript
 $(function(){
  //なにかしらの処理
 });
@@ -105,7 +103,7 @@ $(function(){
 
 こんな風に書きます。
 
-## $(this)とは？
+### $(this)とは？
 
 イベントが発生した要素が格納されます。クリックした要素の id を取得したいときなどに、data 属性と一緒に使うことがあります。
 
@@ -113,22 +111,20 @@ $(function(){
 
 `data()`メソッドを使うと、取得した要素のなかのデータ属性にアクセスすることができます。例えば、複数のコメントに id が連番されているときに、そのコメントの一意の番号を取得することができます。
 
-```
+```javascript
 const commentId = $(this).data("comment-id")
 ```
 
-## 実装するときの注意点
+### 実装するときの注意点
 
 ・どの要素をどのように動かしたいのかを整理してから実装しましょう。
 
 ・変数を作成したときは`console.log`でどのような値を格納しているか、こまめに確認すること
 
-## 参考文献
+### 参考文献
 
-[https://developer.mozilla.org/ja/docs/Web/HTML/Global_attributes/data-*:embed:cite]
+https://developer.mozilla.org/ja/docs/Web/HTML/Global_attributes/data-*
 
-[http://semooh.jp/jquery/:embed:cite]
+http://semooh.jp/jquery/
 
-[asin:B00TDDLNUQ:detail]
-
-[https://qiita.com/hiro266/items/160a4f9290ecd9f27d15:embed:cite]
+https://qiita.com/hiro266/items/160a4f9290ecd9f27d15
