@@ -13,6 +13,10 @@ export const About = (): JSX.Element => {
       <h1>Home</h1>
       <div className="flex flex-col justify-center items-start max-w-4xl mx-auto mb-16 w-full">
         <div className="mb-8 prose dark:prose-dark leading-6 max-w-none">
+          <h2>名前</h2>
+          <p className="mb-8 prose text-lg dark:prose-dark leading-6 max-w-none">
+            俵 健太朗 Kentaro Tawara
+          </p>
           <h2>著者近影</h2>
           <div className="flex justify-center">
             <Image
@@ -45,6 +49,12 @@ export const About = (): JSX.Element => {
               Website:{' '}
               <Link href="https://www.kentaroutawara.dev">
                 <a>https://www.kentaroutawara.dev</a>
+              </Link>
+            </li>
+            <li>
+              はてなブログ:{' '}
+              <Link href="https://kentarotawara.hatenablog.com">
+                <a>https://kentarotawara.hatenablog.com</a>
               </Link>
             </li>
           </ul>
