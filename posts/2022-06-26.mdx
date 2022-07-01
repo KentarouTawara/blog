@@ -3,7 +3,7 @@ title: '関連先のidだけ取得する便利メソッド【Rails】'
 date: '2022-06-26'
 ---
 
-ユーザーが持ってる〇〇（例えば作品）のidを取得したいときがある。
+ユーザーが持ってる〇〇（例えば作品）の id を取得したいときがある。
 
 コード的には下記の状態。
 
@@ -19,7 +19,7 @@ class Work < ApplicationRecord
 end
 ```
 
-ひとつはpluckを使う方法がある。
+ひとつは pluck を使う方法がある。
 (user = User.first)
 
 ```ruby
@@ -32,7 +32,7 @@ user.works.pluck(:id) #=> [1,2,3]
 user.work_ids #=> [1,2,3]
 ```
 
-has_manyすると「has_manyしているテーブルの単数形_ids」というメソッドが生えるみたい。便利！
+has_many すると「has_many しているテーブルの単数形\_ids」というメソッドが生えるみたい。便利！
 
 参考: has_many (ActiveRecord::Associations::ClassMethods) - APIdock
 https://apidock.com/rails/ActiveRecord/Associations/ClassMethods/has_many

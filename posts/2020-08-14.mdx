@@ -22,7 +22,7 @@ $('#sample1').hide();
 このコードは、「id 属性が sample1 である要素を隠す」ということです。
 
 ```html
-<div id = "sample1">なんらかのテキスト</div>
+<div id="sample1">なんらかのテキスト</div>
 ```
 
 この要素があれば、これを非表示（hide）にします。
@@ -96,8 +96,8 @@ http://semooh.jp/jquery
 `$(function(){...})`と書くと、「ページ読み込み完了時に実行されるコードを予約する」ことができます。
 
 ```javascript
-$(function(){
- //なにかしらの処理
+$(function () {
+  //なにかしらの処理
 });
 ```
 
@@ -112,7 +112,7 @@ $(function(){
 `data()`メソッドを使うと、取得した要素のなかのデータ属性にアクセスすることができます。例えば、複数のコメントに id が連番されているときに、そのコメントの一意の番号を取得することができます。
 
 ```javascript
-const commentId = $(this).data("comment-id")
+const commentId = $(this).data('comment-id');
 ```
 
 ### 実装するときの注意点
