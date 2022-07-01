@@ -25,8 +25,8 @@ const Footer = () => {
           <Link href="/">
             <a className="text-gray-900 dark:text-white">Home</a>
           </Link>
-          <Link href="/about">
-            <a className="text-gray-900 dark:text-white">About</a>
+          <Link href="/Blog">
+            <a className="text-gray-900 dark:text-white">Blog</a>
           </Link>
         </div>
         <div className="flex flex-col space-y-4">
